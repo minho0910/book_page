@@ -450,10 +450,16 @@
         books.forEach((book, index) => {
             bookGrid.innerHTML += `
                 <div onclick="openModal(${index})" class="group flex flex-col items-center cursor-pointer">
-                    <div class="w-32 h-32 md:w-44 md:h-44 rounded-full overflow-hidden border-4 border-white shadow-lg transition-all group-hover:-translate-y-2">
-                        <img src="${book.image}" class="w-full h-full object-cover">
+                    <div class="relative w-32 h-44 md:w-44 md:h-60 overflow-hidden rounded-md shadow-lg transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-2xl bg-white">
+                        <img src="${book.image}" class="w-full h-full object-cover" alt="${book.title}">
+                        
+                        <div class="absolute inset-y-0 left-0 w-1.5 bg-black/10"></div>
                     </div>
-                    <h3 class="mt-6 text-[#3E2723] font-serif text-lg">${book.title}</h3>
+                    
+                    <div class="mt-6 text-center">
+                        <h3 class="text-[#3E2723] font-serif text-lg font-bold group-hover:text-[#8D6E63] transition-colors">${book.title}</h3>
+                        <p class="text-[11px] text-[#8D6E63] uppercase tracking-wider mt-1">${book.author}</p>
+                    </div>
                 </div>
             `;
         });
