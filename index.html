@@ -29,6 +29,42 @@
         }
         /* 메뉴 클릭 시 섹션 상단 여백 보정 */
         .scroll-mt-24 { scroll-margin-top: 6rem; }
+        /* 아코디언 애니메이션을 위한 스타일 */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, opacity 0.3s ease;
+            opacity: 0;
+        }
+        .accordion-content.active {
+            max-height: 2000px; /* 충분히 큰 값 설정 */
+            opacity: 1;
+        }
+        /* 예정된 모임 강조 스타일 */
+        .upcoming-highlight {
+            background-color: rgba(251, 191, 36, 0.05); /* 매우 옅은 호박색 */
+            border-left: 4px solid #8D6E63 !important;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            margin-left: -1rem;
+            padding-left: 2rem !important;
+            border-radius: 0 4px 4px 0;
+        }
+        /* 세로 바 길이를 조절하기 위한 새로운 클래스 */
+        .custom-border-left {
+            position: relative;
+            border-left: none !important; /* 기존 보더 제거 */
+        }
+
+        .custom-border-left::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 10px;    /* 선이 시작되는 상단 위치 */
+            bottom: 25px; /* 선이 끝나는 하단 위치 (이 값을 키울수록 선이 짧아집니다) */
+            width: 2px;   /* 선의 두께 */
+            background-color: rgba(141, 110, 99, 0.3); /* 기존 #8D6E63/30 색상 */
+        }
     </style>
 </head>
 <body>
@@ -112,7 +148,7 @@
         </div>
     </section>
 
-    <section id="schedule" class="py-24 bg-[#F4F1EA] scroll-mt-20">
+    <!-- <section id="schedule" class="py-24 bg-[#F4F1EA] scroll-mt-20">
         <div class="max-w-3xl mx-auto px-6">
             <div class="text-center mb-16">
                 <h2 class="text-[#5D4037] text-xl font-serif italic tracking-widest border-b border-[#5D4037] inline-block pb-1">upcoming & past meetups</h2>
@@ -122,6 +158,16 @@
                 <div id="schedule-list" class="space-y-12 border-l-2 border-[#8D6E63]/30">
                 </div>
             </div>
+        </div>
+    </section> -->
+    <section id="schedule" class="py-24 bg-[#F4F1EA] scroll-mt-20">
+        <div class="max-w-3xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-[#5D4037] text-xl font-serif italic tracking-widest border-b border-[#5D4037] inline-block pb-1 uppercase">Our Journey</h2>
+                <p class="text-gray-400 text-[10px] mt-3 tracking-widest uppercase">Click a year to view past meetups</p>
+            </div>
+            
+            <div id="accordion-container" class="space-y-4"></div>
         </div>
     </section>
 
@@ -386,63 +432,112 @@
             }
         ];
 
-        // 일정 렌더링       
-        const scheduleList = document.getElementById('schedule-list');
-        const maxVisible = 3; // 처음에 보여줄 개수
+        // // 일정 렌더링       
+        // const scheduleList = document.getElementById('schedule-list');
+        // const maxVisible = 3; // 처음에 보여줄 개수
 
-        schedules.forEach((item, index) => {
-            const isUpcoming = item.status === "Upcoming";
-            // 4번째(인덱스 3) 이후의 일정은 hidden 클래스로 숨김 처리
-            const hiddenClass = index >= maxVisible ? 'hidden extra-schedule' : '';
+        // schedules.forEach((item, index) => {
+        //     const isUpcoming = item.status === "Upcoming";
+        //     // 4번째(인덱스 3) 이후의 일정은 hidden 클래스로 숨김 처리
+        //     const hiddenClass = index >= maxVisible ? 'hidden extra-schedule' : '';
             
-            scheduleList.innerHTML += `
-                <div class="relative pl-8 timeline-dot ${hiddenClass}">
-                    <span class="text-xs font-bold ${isUpcoming ? 'text-amber-700' : 'text-gray-400'} uppercase tracking-widest">${item.date} ${isUpcoming ? '• NEXT' : ''}</span>
-                    <h3 class="text-xl font-serif text-[#3E2723] mt-1">${item.title} : <span class="italic text-lg">"${item.book}"</span></h3>
-                    <p class="text-sm text-gray-500 mt-2">📍 ${item.location} | ⏰ ${item.time}</p>
-                </div>
-            `;
-        });
+        //     scheduleList.innerHTML += `
+        //         <div class="relative pl-8 timeline-dot ${hiddenClass}">
+        //             <span class="text-xs font-bold ${isUpcoming ? 'text-amber-700' : 'text-gray-400'} uppercase tracking-widest">${item.date} ${isUpcoming ? '• NEXT' : ''}</span>
+        //             <h3 class="text-xl font-serif text-[#3E2723] mt-1">${item.title} : <span class="italic text-lg">"${item.book}"</span></h3>
+        //             <p class="text-sm text-gray-500 mt-2">📍 ${item.location} | ⏰ ${item.time}</p>
+        //         </div>
+        //     `;
+        // });
 
-        // 더보기/접기 버튼 생성
-        if (schedules.length > maxVisible) {
-            const moreBtnContainer = document.createElement('div');
-            moreBtnContainer.id = 'schedule-more-btn-container';
-            moreBtnContainer.className = 'mt-12 text-center';
-            // 더보기 버튼에 개수 표현
-            // moreBtnContainer.innerHTML = `
-            //     <button id="toggle-btn" onclick="toggleSchedules()" class="px-6 py-2 border border-[#8D6E63] text-[#8D6E63] rounded-full text-sm hover:bg-[#8D6E63] hover:text-white transition-all duration-300">
-            //         과거 일정 더보기 (+${schedules.length - maxVisible})
-            //     </button>
-            // `;
+        // // 더보기/접기 버튼 생성
+        // if (schedules.length > maxVisible) {
+        //     const moreBtnContainer = document.createElement('div');
+        //     moreBtnContainer.id = 'schedule-more-btn-container';
+        //     moreBtnContainer.className = 'mt-12 text-center';
+        //     // 더보기 버튼에 개수 표현
+        //     // moreBtnContainer.innerHTML = `
+        //     //     <button id="toggle-btn" onclick="toggleSchedules()" class="px-6 py-2 border border-[#8D6E63] text-[#8D6E63] rounded-full text-sm hover:bg-[#8D6E63] hover:text-white transition-all duration-300">
+        //     //         과거 일정 더보기 (+${schedules.length - maxVisible})
+        //     //     </button>
+        //     // `;
 
-            // 더보기 버튼에 개수 표현 안함
-            moreBtnContainer.innerHTML = `
-                <button id="toggle-btn" onclick="toggleSchedules()" class="px-6 py-2 border border-[#8D6E63] text-[#8D6E63] rounded-full text-sm hover:bg-[#8D6E63] hover:text-white transition-all duration-300">
-                    과거 일정 더보기
-                </button>
-            `;
-            scheduleList.after(moreBtnContainer);
+        //     // 더보기 버튼에 개수 표현 안함
+        //     moreBtnContainer.innerHTML = `
+        //         <button id="toggle-btn" onclick="toggleSchedules()" class="px-6 py-2 border border-[#8D6E63] text-[#8D6E63] rounded-full text-sm hover:bg-[#8D6E63] hover:text-white transition-all duration-300">
+        //             과거 일정 더보기
+        //         </button>
+        //     `;
+        //     scheduleList.after(moreBtnContainer);
+        // }
+
+        // // 토글 함수
+        // function toggleSchedules() {
+        //     const extras = document.querySelectorAll('.extra-schedule');
+        //     const btn = document.getElementById('toggle-btn');
+        //     const isHidden = extras[0].classList.contains('hidden');
+
+        //     if (isHidden) {
+        //         // 펼치기
+        //         extras.forEach(el => el.classList.remove('hidden'));
+        //         btn.innerText = '일정 접기';
+        //     } else {
+        //         // 접기
+        //         extras.forEach(el => el.classList.add('hidden'));
+        //         btn.innerText = `과거 일정 더보기 (+${schedules.length - maxVisible})`;
+                
+        //         // 접었을 때 섹션 상단으로 부드럽게 이동 (사용자 배려)
+        //         document.getElementById('schedule').scrollIntoView({ behavior: 'smooth' });
+        //     }
+        // }
+        function renderAccordionSchedules() {
+            const container = document.getElementById('accordion-container');
+            const grouped = schedules.reduce((acc, item) => {
+                const year = item.date.split('.')[0];
+                if (!acc[year]) acc[year] = [];
+                acc[year].push(item);
+                return acc;
+            }, {});
+
+            const sortedYears = Object.keys(grouped).sort((a, b) => b - a);
+            
+            container.innerHTML = sortedYears.map((year, index) => {
+                const isOpen = index === 0; // 최신 연도 자동 열림
+                return `
+                    <div class="border-b border-[#8D6E63]/20">
+                        <button onclick="toggleAccordion('${year}')" class="w-full py-6 flex justify-between items-center text-[#3E2723] focus:outline-none group">
+                            <span class="font-serif text-2xl group-hover:text-[#8D6E63] transition-colors">${year}</span>
+                            <svg id="icon-${year}" class="w-5 h-5 transition-transform duration-500 ${isOpen ? 'rotate-180' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div id="content-${year}" class="accordion-content ${isOpen ? 'active' : ''} space-y-6">
+                            ${grouped[year].map(item => {
+                                const isUpcoming = item.status === 'Upcoming';
+                                return `
+                                    <div class="pl-4 custom-border-left ${isUpcoming ? 'upcoming-highlight' : ''} pb-6 mb-2">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-[10px] font-bold ${isUpcoming ? 'text-[#8D6E63]' : 'text-gray-400'} uppercase tracking-widest">${item.date}</span>
+                                            ${isUpcoming ? '<span class="animate-pulse text-[9px] bg-[#8D6E63] text-white px-2 py-0.5 rounded-full font-bold">UPCOMING</span>' : ''}
+                                        </div>
+                                        <h4 class="text-lg font-serif text-[#3E2723] mt-1">${item.title} : <span class="italic text-base">"${item.book}"</span></h4>
+                                        <p class="text-[11px] text-gray-500 mt-1">📍 ${item.location} | ⏰ ${item.time}</p>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
-        // 토글 함수
-        function toggleSchedules() {
-            const extras = document.querySelectorAll('.extra-schedule');
-            const btn = document.getElementById('toggle-btn');
-            const isHidden = extras[0].classList.contains('hidden');
-
-            if (isHidden) {
-                // 펼치기
-                extras.forEach(el => el.classList.remove('hidden'));
-                btn.innerText = '일정 접기';
-            } else {
-                // 접기
-                extras.forEach(el => el.classList.add('hidden'));
-                btn.innerText = `과거 일정 더보기 (+${schedules.length - maxVisible})`;
-                
-                // 접었을 때 섹션 상단으로 부드럽게 이동 (사용자 배려)
-                document.getElementById('schedule').scrollIntoView({ behavior: 'smooth' });
-            }
+        function toggleAccordion(year) {
+            const content = document.getElementById(`content-${year}`);
+            const icon = document.getElementById(`icon-${year}`);
+            
+            // active 클래스 토글 (CSS 애니메이션 작동)
+            content.classList.toggle('active');
+            icon.classList.toggle('rotate-180');
         }
 
         // 책 그리드 렌더링
@@ -586,6 +681,7 @@
         // 페이지 로드 시 실행
         window.onload = function() {
             renderDashboard();
+            renderAccordionSchedules()
             // 기존의 renderBooks(), renderSchedules() 등도 여기서 호출
         };
     </script>
