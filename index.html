@@ -491,8 +491,14 @@
         //     }
         // }
         function renderAccordionSchedules() {
+            const today = new Date(); // 현재 시간
             const container = document.getElementById('accordion-container');
             const grouped = schedules.reduce((acc, item) => {
+                // "2026. 02. 07" 형식을 Date 객체로 변환 (비교를 위해)
+                const eventDate = new Date(item.date.replace(/\. /g, '-').replace(/\./g, '-'));
+                // 오늘 날짜보다 이후이면 Upcoming으로 간주
+                item.currentStatus = eventDate > today ? 'Upcoming' : 'Completed';
+                
                 const year = item.date.split('.')[0];
                 if (!acc[year]) acc[year] = [];
                 acc[year].push(item);
@@ -511,21 +517,20 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        <div id="content-${year}" class="accordion-content ${isOpen ? 'active' : ''} space-y-6">
-                            ${grouped[year].map(item => {
-                                const isUpcoming = item.status === 'Upcoming';
-                                return `
-                                    <div class="pl-4 custom-border-left ${isUpcoming ? 'upcoming-highlight' : ''} pb-6 mb-2">
-                                        <div class="flex items-center gap-2">
-                                            <span class="text-[10px] font-bold ${isUpcoming ? 'text-[#8D6E63]' : 'text-gray-400'} uppercase tracking-widest">${item.date}</span>
-                                            ${isUpcoming ? '<span class="animate-pulse text-[9px] bg-[#8D6E63] text-white px-2 py-0.5 rounded-full font-bold">UPCOMING</span>' : ''}
-                                        </div>
-                                        <h4 class="text-lg font-serif text-[#3E2723] mt-1">${item.title} : <span class="italic text-base">"${item.book}"</span></h4>
-                                        <p class="text-[11px] text-gray-500 mt-1">📍 ${item.location} | ⏰ ${item.time}</p>
+                        <div id="content-${year}" class="accordion-content ${index === 0 ? 'active' : ''} space-y-6">
+                        ${grouped[year].map(item => {
+                            const isUpcoming = item.currentStatus === 'Upcoming';
+                            return `
+                                <div class="pl-4 custom-border-left ${isUpcoming ? 'upcoming-highlight' : ''} pb-6 mb-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-[10px] font-bold ${isUpcoming ? 'text-[#8D6E63]' : 'text-gray-400'} uppercase tracking-widest">${item.date}</span>
+                                        ${isUpcoming ? '<span class="animate-pulse text-[9px] bg-[#8D6E63] text-white px-2 py-0.5 rounded-full font-bold">UPCOMING</span>' : ''}
                                     </div>
-                                `;
-                            }).join('')}
-                        </div>
+                                    <h4 class="text-lg font-serif text-[#3E2723] mt-1">${item.title} : <span class="italic text-base">"${item.book}"</span></h4>
+                                    <p class="text-[11px] text-gray-500 mt-1">📍 ${item.location} | ⏰ ${item.time}</p>
+                                </div>
+                            `;
+                        }).join('')}
                     </div>
                 `;
             }).join('');
@@ -645,9 +650,18 @@
         }
 
         function renderDashboard() {
+            const today = new Date();
+
+            // 오늘 날짜와 같거나 과거인 일정만 필터링 (완료된 모임)
+            const completedMeetings = schedules.filter(item => {
+                const eventDate = new Date(item.date.replace(/\. /g, '-').replace(/\./g, '-'));
+                return eventDate <= today;
+            });
+
+            // 필터링된 결과의 개수를 통계에 반영
+            document.getElementById('stat-total-meetings').innerText = `${completedMeetings.length}회`;
             // 1. 기본 수치 업데이트
             document.getElementById('stat-total-books').innerText = `${books.length}권`;
-            document.getElementById('stat-total-meetings').innerText = `${schedules.length - 1}회`;
 
             // 2. 장르 분포 계산
             const genreCounts = {};
