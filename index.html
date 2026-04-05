@@ -275,6 +275,13 @@
                     </div>
                 </div>
 
+                <div class="space-y-16"> <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="md:col-span-2 md:row-span-2 overflow-hidden rounded-sm border-[12px] border-white shadow-md rotate-[-1deg] transition-transform hover:rotate-0 cursor-zoom-in" onclick="openLightbox(this.querySelector('img').src)">
+                        <img src="our_moments/26.03.28.jpg" class="w-full h-full object-cover aspect-video" alt="Meeting photo">
+                    </div>
+                    
+                </div>
+
             </div>
         </div>
     </section>
@@ -325,7 +332,8 @@
     <script>
         // 일정 데이터
         const schedules = [
-            { date: "2026. 03. 28", status: "Upcoming", title: "3월 정기 모임", book: "천 개의 파랑", location: "공간너섬 용산역점", time: "14:00 - 17:00" },
+            { date: "2026. 04. 25", status: "Upcoming", title: "4월 정기 모임", book: "인어가 잠든 집", location: "잠실 어딘가", time: "15:00 - 18:00" },
+            { date: "2026. 03. 28", status: "past", title: "3월 정기 모임", book: "천 개의 파랑", location: "공간너섬 용산역점", time: "14:00 - 17:00" },
             { date: "2026. 02. 07", status: "Past", title: "2026년 OT", book: "새 멤버 소개 및 앞으로의 활동 계획", location: "공간너섬 용산역점", time: "17:00 - 21:00" },
             { date: "2026. 01. 03", status: "Past", title: "1월 정기 모임", book: "죄와 벌", location: "리얼컨퍼런스 용산점", time: "14:30 - 18:00" },
             { date: "2025. 11. 29", status: "Past", title: "11월 정기 모임", book: "물고기는 존재하지 않는다", location: "리얼컨퍼런스 용산점", time: "14:00 - 17:00" },
@@ -439,6 +447,15 @@
                 summary: "부서진 로봇 '콜리'와 안락사 위기의 경주마 '투데이', 그리고 상처를 안고 사는 사람들이 나누는 따뜻한 연대와 회복의 이야기.",
                 topic: "기술이 발전한 미래에도 변하지 않는 '다정함'과 '교감'의 가치는 무엇인가?",
                 materialUrl: "https://drive.google.com/file/d/1MgEJXjFB9X_xvJuHNCCCWQo91SoJy3jO/view?usp=drive_link"
+            },
+            {
+                title: "인어가 잠든 집",
+                author: "히가시노 게이고",
+                genre: "소설/미스터리",
+                image: "images_book/인어가 잠든 집.jpg",
+                summary: "갑작스러운 사고로 뇌사 상태에 빠진 딸과 그 죽음을 인정하지 못하는 부모가 기술의 힘을 빌려 생명을 연장하며 벌어지는 윤리적 갈등과 슬픔의 기록.",
+                topic: "과학 기술이 삶을 연장할 때, 죽음의 경계는 어디이며 우리는 무엇을 생명이라 부를 수 있는가?",
+                materialUrl: " "
             }
         ];
 
