@@ -1,146 +1,241 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>여백의 시간 | 독서 토론 모임</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&family=Noto+Sans+KR:wght@300;400&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap"
+        rel="stylesheet">
     <style>
-        /* 부드러운 스크롤 이동 적용 */
-        html { scroll-behavior: smooth; }
-        body { font-family: 'Noto Sans KR', sans-serif; background-color: #F4F1EA; transition: overflow 0.3s; padding-top: 64px; }
-        .font-serif { font-family: 'Noto Serif KR', serif; }
-        .hero-overlay { background: rgba(0, 0, 0, 0.4); }
-        /* 모달 애니메이션 */
-        .modal-active { display: flex !important; animation: fadeIn 0.3s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        /* 타임라인 왼쪽의 갈색 점 디자인 */
-        .timeline-dot::before { 
-            content: ''; 
-            position: absolute; 
-            left: -10px; 
-            top: 10px; 
-            width: 18px; 
-            height: 18px; 
-            background: #8D6E63; 
-            border: 4px solid #F4F1EA;
-            border-radius: 50%; 
+        /* 기본 스타일 */
+        html {
+            scroll-behavior: smooth;
         }
-        /* 메뉴 클릭 시 섹션 상단 여백 보정 */
-        .scroll-mt-24 { scroll-margin-top: 6rem; }
-        /* 아코디언 애니메이션을 위한 스타일 */
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #F4F1EA;
+            transition: overflow 0.3s;
+            padding-top: 64px;
+        }
+
+        .font-serif {
+            font-family: 'Noto Serif KR', serif;
+        }
+
+        .hero-overlay {
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6));
+        }
+
+        /* 메뉴 클릭 보정 */
+        .scroll-mt-24 {
+            scroll-margin-top: 6rem;
+        }
+
+        /* 스크롤 애니메이션 (Scroll Reveal) */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .delay-100 {
+            transition-delay: 100ms;
+        }
+
+        .delay-200 {
+            transition-delay: 200ms;
+        }
+
+        .delay-300 {
+            transition-delay: 300ms;
+        }
+
+        /* 아코디언 및 타임라인 */
         .accordion-content {
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.5s ease-in-out, opacity 0.3s ease;
             opacity: 0;
         }
+
         .accordion-content.active {
-            max-height: 2000px; /* 충분히 큰 값 설정 */
+            max-height: 2500px;
             opacity: 1;
         }
-        /* 예정된 모임 강조 스타일 */
+
         .upcoming-highlight {
-            background-color: rgba(251, 191, 36, 0.05); /* 매우 옅은 호박색 */
+            background-color: rgba(141, 110, 99, 0.05);
             border-left: 4px solid #8D6E63 !important;
-            padding-top: 1rem;
-            padding-bottom: 1rem;
+            padding: 1.5rem 0 1.5rem 2rem !important;
             margin-left: -1rem;
-            padding-left: 2rem !important;
             border-radius: 0 4px 4px 0;
         }
-        /* 세로 바 길이를 조절하기 위한 새로운 클래스 */
+
         .custom-border-left {
             position: relative;
-            border-left: none !important; /* 기존 보더 제거 */
+            border-left: none !important;
         }
 
         .custom-border-left::before {
             content: '';
             position: absolute;
             left: 0;
-            top: 10px;    /* 선이 시작되는 상단 위치 */
-            bottom: 25px; /* 선이 끝나는 하단 위치 (이 값을 키울수록 선이 짧아집니다) */
-            width: 2px;   /* 선의 두께 */
-            background-color: rgba(141, 110, 99, 0.3); /* 기존 #8D6E63/30 색상 */
+            top: 12px;
+            bottom: 25px;
+            width: 2px;
+            background-color: rgba(141, 110, 99, 0.2);
+        }
+
+        /* 필터 버튼 */
+        .filter-btn {
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background-color: #8D6E63;
+            color: white;
+            border-color: #8D6E63;
+        }
+
+        /* 모달 및 라이트박스 */
+        .modal-active {
+            display: flex !important;
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                backdrop-filter: blur(0px);
+            }
+
+            to {
+                opacity: 1;
+                backdrop-filter: blur(4px);
+            }
+        }
+
+        /* 가로 스크롤 숨김 */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* 내비게이션 바 블러 */
+        .nav-scrolled {
+            background-color: rgba(244, 241, 234, 0.9) !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
     </style>
 </head>
-<body>
 
-    <nav class="fixed top-0 w-full z-40 bg-[#F4F1EA]/80 backdrop-blur-md border-b border-[#8D6E63]/10 px-6 py-4">
+<body class="text-gray-800">
+
+    <!-- Navigation -->
+    <nav id="navbar"
+        class="fixed top-0 w-full z-40 bg-[#F4F1EA]/70 backdrop-blur-md border-b border-[#8D6E63]/10 px-6 py-4 transition-all duration-300">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
             <a href="#" class="font-serif text-[#3E2723] text-xl font-bold tracking-tight">여백의 시간</a>
-            
+
             <button id="menu-toggle" class="md:hidden text-[#3E2723] focus:outline-none">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 6h16M4 12h16m-7 6h7"></path>
                 </svg>
             </button>
 
-            <div id="nav-links" class="hidden md:flex space-x-8 text-sm font-medium text-[#5D4037] absolute md:static top-full left-0 w-full md:w-auto bg-[#F4F1EA] md:bg-transparent px-6 py-4 md:p-0 border-b md:border-none border-[#8D6E63]/10">
-                <a href="#intro-detail" class="block md:inline hover:text-[#8D6E63] py-2 md:py-0 transition-colors">intro</a>
-                <a href="#schedule" class="block md:inline hover:text-[#8D6E63] py-2 md:py-0 transition-colors">schedule</a>
-                <a href="#a list of books read" class="block md:inline hover:text-[#8D6E63] py-2 md:py-0 transition-colors">list</a>
+            <div id="nav-links"
+                class="hidden md:flex space-x-8 text-sm font-medium text-[#5D4037] absolute md:static top-full left-0 w-full md:w-auto bg-[#F4F1EA] md:bg-transparent px-6 py-4 md:p-0 border-b md:border-none border-[#8D6E63]/10 shadow-lg md:shadow-none">
+                <a href="#intro-detail"
+                    class="block md:inline hover:text-[#8D6E63] py-2 md:py-0 transition-colors">intro</a>
+                <a href="#quotes" class="block md:inline hover:text-[#8D6E63] py-2 md:py-0 transition-colors">quotes</a>
+                <a href="#schedule"
+                    class="block md:inline hover:text-[#8D6E63] py-2 md:py-0 transition-colors">schedule</a>
+                <a href="#books" class="block md:inline hover:text-[#8D6E63] py-2 md:py-0 transition-colors">library</a>
                 <a href="#stats" class="block md:inline hover:text-[#8D6E63] py-2 md:py-0 transition-colors">stats</a>
-                <a href="#gallery" class="block md:inline hover:text-[#8D6E63] py-2 md:py-0 transition-colors">picture</a>
+                <a href="#gallery"
+                    class="block md:inline hover:text-[#8D6E63] py-2 md:py-0 transition-colors">gallery</a>
             </div>
         </div>
     </nav>
 
-    <header id="intro" class="relative h-[60vh] flex items-center justify-center text-white overflow-hidden scroll-mt-24">
-        <img src="https://images.unsplash.com/photo-1516979187457-637abb4f9353?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" 
-             class="absolute inset-0 w-full h-full object-cover" alt="Cozy reading space">
+    <!-- Hero Section -->
+    <header id="intro" class="relative h-[70vh] flex items-center justify-center text-white overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1516979187457-637abb4f9353?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"
+            class="absolute inset-0 w-full h-full object-cover transform scale-105 transition-transform duration-[20s] hover:scale-110"
+            alt="Cozy reading space">
         <div class="absolute inset-0 hero-overlay"></div>
-        <div class="relative z-10 text-center px-4">
-            <h1 class="text-4xl md:text-6xl font-serif mb-6 tracking-widest uppercase">The Time of Margin</h1>
-            <br><br>  
-            <p class="text-lg md:text-xl font-light opacity-90 leading-relaxed">
+        <div class="relative z-10 text-center px-4 reveal">
+            <h1 class="text-4xl md:text-7xl font-serif mb-6 tracking-widest uppercase drop-shadow-lg">The Margin</h1>
+            <div class="h-px w-24 bg-white/50 mx-auto my-8"></div>
+            <p class="text-lg md:text-2xl font-light opacity-90 leading-relaxed drop-shadow-md">
                 바쁜 일상 속, 잠시 멈추어 서는 시간<br>
                 책과 사람 그리고 이야기가 머무는 곳 <span class="font-serif font-bold italic">'여백의 시간'</span>입니다.
             </p>
         </div>
     </header>
 
-    <section id="intro-detail" class="py-20 bg-white/30 scroll-mt-24">
+    <!-- Intro Detail Section -->
+    <section id="intro-detail" class="py-24 bg-white/30 scroll-mt-24">
         <div class="max-w-5xl mx-auto px-6">
-            
             <div class="grid md:grid-cols-3 gap-12 mb-24">
-                <div class="text-center">
-                    <span class="text-[#8D6E63] font-serif text-3xl italic">01</span>
-                    <h4 class="text-xl font-serif text-[#3E2723] mt-2 mb-4">느린 읽기</h4>
-                    <p class="text-sm text-gray-600 leading-relaxed">빨리 읽기보다 깊이 읽기를 지향합니다. 한 페이지를 읽더라도 나만의 문장을 찾는 시간을 소중히 합니다.</p>
+                <div class="text-center reveal">
+                    <span class="text-[#8D6E63] font-serif text-4xl italic opacity-50">01</span>
+                    <h4 class="text-xl font-serif text-[#3E2723] mt-4 mb-4">느린 읽기</h4>
+                    <p class="text-sm text-gray-600 leading-relaxed">빨리 읽기보다 깊이 읽기를 지향합니다. 한 페이지를 읽더라도 나만의 문장을 찾는 시간을
+                        소중히 합니다.</p>
                 </div>
-                <div class="text-center">
-                    <span class="text-[#8D6E63] font-serif text-3xl italic">02</span>
-                    <h4 class="text-xl font-serif text-[#3E2723] mt-2 mb-4">다양한 시선</h4>
-                    <p class="text-sm text-gray-600 leading-relaxed">나와 다른 해석을 환대합니다. 정답이 없는 대화 속에서 우리의 세계는 더욱 넓어집니다.</p>
+                <div class="text-center reveal delay-100">
+                    <span class="text-[#8D6E63] font-serif text-4xl italic opacity-50">02</span>
+                    <h4 class="text-xl font-serif text-[#3E2723] mt-4 mb-4">다양한 시선</h4>
+                    <p class="text-sm text-gray-600 leading-relaxed">나와 다른 해석을 환대합니다. 정답이 없는 대화 속에서 우리의 세계는 더욱 넓어집니다.
+                    </p>
                 </div>
-                <div class="text-center">
-                    <span class="text-[#8D6E63] font-serif text-3xl italic">03</span>
-                    <h4 class="text-xl font-serif text-[#3E2723] mt-2 mb-4">기록의 가치</h4>
-                    <p class="text-sm text-gray-600 leading-relaxed">휘발되는 대화가 아닌, 기록으로 남는 사유를 지향합니다. 우리의 여백은 기록으로 채워집니다.</p>
+                <div class="text-center reveal delay-200">
+                    <span class="text-[#8D6E63] font-serif text-4xl italic opacity-50">03</span>
+                    <h4 class="text-xl font-serif text-[#3E2723] mt-4 mb-4">기록의 가치</h4>
+                    <p class="text-sm text-gray-600 leading-relaxed">휘발되는 대화가 아닌, 기록으로 남는 사유를 지향합니다. 우리의 여백은 기록으로 채워집니다.
+                    </p>
                 </div>
             </div>
 
-            <div class="bg-[#FDFCFB] border border-[#8D6E63]/10 p-10 md:p-16 rounded-sm shadow-sm">
-                <h3 class="text-2xl font-serif text-[#3E2723] mb-8 text-center italic">Our Rules</h3>
+            <div class="bg-[#FDFCFB] border border-[#8D6E63]/10 p-10 md:p-16 rounded-lg shadow-sm reveal">
+                <h3 class="text-2xl font-serif text-[#3E2723] mb-10 text-center italic relative">
+                    <span class="bg-[#FDFCFB] px-6 relative z-10">Our Rules</span>
+                    <div class="absolute top-1/2 left-0 w-full h-px bg-[#8D6E63]/20 -z-0"></div>
+                </h3>
                 <ul class="space-y-6 max-w-2xl mx-auto">
-                    <li class="flex items-start">
-                        <span class="text-[#8D6E63] mr-4 mt-1 font-bold">1.</span>
+                    <li class="flex items-start group">
+                        <span
+                            class="text-[#8D6E63] mr-4 mt-1 font-serif text-lg transition-transform group-hover:scale-110">I.</span>
                         <p class="text-[#5D4037] leading-relaxed">모든 모임은 정해진 도서를 완독하고 참여하는 것을 원칙으로 합니다.</p>
                     </li>
-                    <li class="flex items-start">
-                        <span class="text-[#8D6E63] mr-4 mt-1 font-bold">2.</span>
+                    <li class="flex items-start group">
+                        <span
+                            class="text-[#8D6E63] mr-4 mt-1 font-serif text-lg transition-transform group-hover:scale-110">II.</span>
                         <p class="text-[#5D4037] leading-relaxed">타인의 의견에 비난이 아닌 '질문'으로 화답하며, 서로의 취향을 존중합니다.</p>
                     </li>
-                    <li class="flex items-start">
-                        <span class="text-[#8D6E63] mr-4 mt-1 font-bold">3.</span>
+                    <li class="flex items-start group">
+                        <span
+                            class="text-[#8D6E63] mr-4 mt-1 font-serif text-lg transition-transform group-hover:scale-110">III.</span>
                         <p class="text-[#5D4037] leading-relaxed">모임 후에는 짧은 한 줄이라도 본인의 생각이나 인상 깊었던 문장을 기록으로 남깁니다.</p>
                     </li>
-                    <li class="flex items-start">
-                        <span class="text-[#8D6E63] mr-4 mt-1 font-bold">4.</span>
+                    <li class="flex items-start group">
+                        <span
+                            class="text-[#8D6E63] mr-4 mt-1 font-serif text-lg transition-transform group-hover:scale-110">IV.</span>
                         <p class="text-[#5D4037] leading-relaxed">무단 불참 2회 시, 원활한 모임 운영을 위해 다음 분기 참여가 제한될 수 있습니다.</p>
                     </li>
                 </ul>
@@ -148,191 +243,306 @@
         </div>
     </section>
 
-    <!-- <section id="schedule" class="py-24 bg-[#F4F1EA] scroll-mt-20">
-        <div class="max-w-3xl mx-auto px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-[#5D4037] text-xl font-serif italic tracking-widest border-b border-[#5D4037] inline-block pb-1">upcoming & past meetups</h2>
-            </div>
-            
-            <div class="ml-4 md:ml-0">
-                <div id="schedule-list" class="space-y-12 border-l-2 border-[#8D6E63]/30">
-                </div>
-            </div>
+    <!-- NEW: Member's Quotes Section -->
+    <section id="quotes" class="py-24 bg-[#3E2723] text-[#F4F1EA] scroll-mt-24 overflow-hidden relative">
+        <div class="max-w-6xl mx-auto px-6 mb-12 text-center reveal">
+            <h2
+                class="text-2xl font-serif italic tracking-widest border-b border-[#F4F1EA]/30 inline-block pb-2 uppercase">
+                Collected Sentences</h2>
+            <p class="text-white/50 text-[11px] mt-4 tracking-widest uppercase">우리가 밑줄 친 문장들</p>
         </div>
-    </section> -->
-    <section id="schedule" class="py-24 bg-[#F4F1EA] scroll-mt-20">
-        <div class="max-w-3xl mx-auto px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-[#5D4037] text-xl font-serif italic tracking-widest border-b border-[#5D4037] inline-block pb-1 uppercase">Our Journey</h2>
-                <p class="text-gray-400 text-[10px] mt-3 tracking-widest uppercase">Click a year to view past meetups</p>
-            </div>
-            
-            <div id="accordion-container" class="space-y-4"></div>
+
+        <div class="flex overflow-x-auto gap-6 pb-8 px-6 md:px-12 hide-scrollbar reveal delay-100" id="quote-container">
+            <!-- Quotes dynamically injected here -->
         </div>
     </section>
 
-    <section id="a list of books read" class="py-24 bg-[#EDE9DF] scroll-mt-20">
+    <!-- Schedule Section -->
+    <section id="schedule" class="py-24 bg-[#F4F1EA] scroll-mt-24">
+        <div class="max-w-3xl mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <h2
+                    class="text-[#5D4037] text-2xl font-serif italic tracking-widest border-b border-[#5D4037]/30 inline-block pb-2 uppercase">
+                    Our Journey</h2>
+                <p class="text-gray-400 text-[11px] mt-4 tracking-widest uppercase">Click a year to view past meetups
+                </p>
+            </div>
+
+            <div id="accordion-container" class="space-y-4 reveal delay-100"></div>
+        </div>
+    </section>
+
+    <!-- Books Library Section -->
+    <section id="books" class="py-24 bg-[#EDE9DF] scroll-mt-24">
         <div class="max-w-6xl mx-auto px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-[#5D4037] text-xl font-serif italic tracking-widest border-b border-[#5D4037] inline-block pb-1">a list of books read</h2>
+            <div class="text-center mb-12 reveal">
+                <h2
+                    class="text-[#5D4037] text-2xl font-serif italic tracking-widest border-b border-[#5D4037]/30 inline-block pb-2 uppercase">
+                    Library</h2>
+                <p class="text-gray-500 text-[11px] mt-4 tracking-widest uppercase">함께 읽은 책들</p>
             </div>
-            <div id="book-grid" class="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-16">
-                </div>
+
+            <!-- Filter Buttons -->
+            <div class="flex flex-wrap justify-center gap-2 mb-12 reveal delay-100" id="filter-container">
+                <button
+                    class="filter-btn active px-5 py-2 rounded-full text-xs border border-[#8D6E63]/30 text-[#5D4037] bg-white hover:bg-[#8D6E63] hover:text-white"
+                    data-filter="All">전체보기</button>
+                <button
+                    class="filter-btn px-5 py-2 rounded-full text-xs border border-[#8D6E63]/30 text-[#5D4037] bg-white hover:bg-[#8D6E63] hover:text-white"
+                    data-filter="인문/철학">인문/철학</button>
+                <button
+                    class="filter-btn px-5 py-2 rounded-full text-xs border border-[#8D6E63]/30 text-[#5D4037] bg-white hover:bg-[#8D6E63] hover:text-white"
+                    data-filter="사회/경제">사회/경제</button>
+                <button
+                    class="filter-btn px-5 py-2 rounded-full text-xs border border-[#8D6E63]/30 text-[#5D4037] bg-white hover:bg-[#8D6E63] hover:text-white"
+                    data-filter="문학/소설">문학/소설</button>
+                <button
+                    class="filter-btn px-5 py-2 rounded-full text-xs border border-[#8D6E63]/30 text-[#5D4037] bg-white hover:bg-[#8D6E63] hover:text-white"
+                    data-filter="에세이/예술">에세이/예술</button>
+                <button
+                    class="filter-btn px-5 py-2 rounded-full text-xs border border-[#8D6E63]/30 text-[#5D4037] bg-white hover:bg-[#8D6E63] hover:text-white"
+                    data-filter="과학">과학/SF/기타</button>
+            </div>
+
+            <div id="book-grid" class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-12 reveal delay-200">
+                <!-- Books dynamically injected here -->
+            </div>
         </div>
     </section>
 
-    <section id="stats" class="py-24 bg-[#F4F1EA] scroll-mt-20">
+    <!-- Stats Section -->
+    <section id="stats" class="py-24 bg-[#F4F1EA] scroll-mt-24">
         <div class="max-w-4xl mx-auto px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-[#5D4037] text-xl font-serif italic tracking-widest border-b border-[#5D4037] inline-block pb-1 uppercase">Reading Dashboard</h2>
-                <p class="text-gray-400 text-[10px] mt-3 tracking-widest">우리가 함께 쌓아온 사유의 기록들</p>
+            <div class="text-center mb-16 reveal">
+                <h2
+                    class="text-[#5D4037] text-2xl font-serif italic tracking-widest border-b border-[#5D4037]/30 inline-block pb-2 uppercase">
+                    Dashboard</h2>
+                <p class="text-gray-400 text-[11px] mt-4 tracking-widest uppercase">우리가 함께 쌓아온 사유의 기록들</p>
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-6 mb-16">
-                <div class="bg-white/50 p-6 rounded-sm text-center shadow-sm">
-                    <p class="text-[10px] text-gray-400 uppercase mb-1">Total Books</p>
-                    <p id="stat-total-books" class="text-2xl font-serif text-[#3E2723]">0권</p>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-6 mb-20 reveal delay-100">
+                <div class="bg-white/70 p-8 rounded-lg text-center shadow-sm hover:shadow-md transition-shadow">
+                    <p class="text-[10px] text-gray-400 uppercase mb-2 font-bold tracking-wider">Total Books</p>
+                    <p id="stat-total-books" class="text-4xl font-serif text-[#3E2723]">0<span class="text-lg">권</span>
+                    </p>
                 </div>
-                <div class="bg-white/50 p-6 rounded-sm text-center shadow-sm">
-                    <p class="text-[10px] text-gray-400 uppercase mb-1">Meetings</p>
-                    <p id="stat-total-meetings" class="text-2xl font-serif text-[#3E2723]">0회</p>
+                <div class="bg-white/70 p-8 rounded-lg text-center shadow-sm hover:shadow-md transition-shadow">
+                    <p class="text-[10px] text-gray-400 uppercase mb-2 font-bold tracking-wider">Meetings</p>
+                    <p id="stat-total-meetings" class="text-4xl font-serif text-[#3E2723]">0<span
+                            class="text-lg">회</span></p>
                 </div>
-                <div class="bg-white/50 p-6 rounded-sm text-center shadow-sm">
-                    <p class="text-[10px] text-gray-400 uppercase mb-1">Members</p>
-                    <p class="text-2xl font-serif text-[#3E2723]">17명</p>
+                <div
+                    class="bg-white/70 p-8 rounded-lg text-center shadow-sm hover:shadow-md transition-shadow col-span-2 md:col-span-1">
+                    <p class="text-[10px] text-gray-400 uppercase mb-2 font-bold tracking-wider">Members</p>
+                    <p class="text-4xl font-serif text-[#3E2723]">17<span class="text-lg">명</span></p>
                 </div>
-                
             </div>
 
-            <div class="grid md:grid-cols-2 gap-12">
+            <div class="grid md:grid-cols-2 gap-16 reveal delay-200">
                 <div class="space-y-6">
-                    <h4 class="text-sm font-serif text-[#5D4037] mb-6 border-l-4 border-[#8D6E63] pl-3">Genre Distribution</h4>
-                    <div id="genre-container" class="space-y-4">
-                        </div>
+                    <h4 class="text-sm font-serif text-[#5D4037] mb-8 border-l-4 border-[#8D6E63] pl-3">Genre
+                        Distribution</h4>
+                    <div id="genre-container" class="space-y-5">
+                        <!-- Genres dynamically injected -->
+                    </div>
                 </div>
 
                 <div>
-                    <h4 class="text-sm font-serif text-[#5D4037] mb-6 border-l-4 border-[#8D6E63] pl-3">Our Taste Keywords</h4>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="px-4 py-2 bg-white border border-[#8D6E63]/20 rounded-full text-xs text-[#5D4037] shadow-sm">#여백</span>
-                        <span class="px-4 py-2 bg-white border border-[#8D6E63]/20 rounded-full text-xs text-[#5D4037] shadow-sm">#문장_수집</span>
-                        <span class="px-4 py-2 bg-white border border-[#8D6E63]/20 rounded-full text-xs text-[#5D4037] shadow-sm">#차분한_토론</span>
-                        <span class="px-4 py-2 bg-white border border-[#8D6E63]/20 rounded-full text-xs text-[#5D4037] shadow-sm">#양귀자</span>
-                        <span class="px-4 py-2 bg-white border border-[#8D6E63]/20 rounded-full text-xs text-[#5D4037] shadow-sm">#자아성찰</span>
-                        <span class="px-4 py-2 bg-white border border-[#8D6E63]/20 rounded-full text-xs text-[#5D4037] shadow-sm">#삶의_모순</span>
-                        <span class="px-4 py-2 bg-white border border-[#8D6E63]/20 rounded-full text-xs text-[#5D4037] shadow-sm">#깊이_읽기</span>
+                    <h4 class="text-sm font-serif text-[#5D4037] mb-8 border-l-4 border-[#8D6E63] pl-3">Our Taste
+                        Keywords</h4>
+                    <div class="flex flex-wrap gap-2.5">
+                        <span
+                            class="px-4 py-2 bg-white border border-[#8D6E63]/20 rounded-full text-xs text-[#5D4037] shadow-sm hover:bg-[#8D6E63] hover:text-white transition-colors cursor-default">#사회적_통찰</span>
+                        <span
+                            class="px-4 py-2 bg-white border border-[#8D6E63]/20 rounded-full text-xs text-[#5D4037] shadow-sm hover:bg-[#8D6E63] hover:text-white transition-colors cursor-default">#인간성의_탐구</span>
+                        <span
+                            class="px-4 py-2 bg-white border border-[#8D6E63]/20 rounded-full text-xs text-[#5D4037] shadow-sm hover:bg-[#8D6E63] hover:text-white transition-colors cursor-default">#정의와_윤리</span>
+                        <span
+                            class="px-4 py-2 bg-white border border-[#8D6E63]/20 rounded-full text-xs text-[#5D4037] shadow-sm hover:bg-[#8D6E63] hover:text-white transition-colors cursor-default">#생명과_기술</span>
+                        <span
+                            class="px-4 py-2 bg-white border border-[#8D6E63]/20 rounded-full text-xs text-[#5D4037] shadow-sm hover:bg-[#8D6E63] hover:text-white transition-colors cursor-default">#연대와_회복</span>
+                        <span
+                            class="px-4 py-2 bg-white border border-[#8D6E63]/20 rounded-full text-xs text-[#5D4037] shadow-sm hover:bg-[#8D6E63] hover:text-white transition-colors cursor-default">#삶의_모순</span>
+                        <span
+                            class="px-4 py-2 bg-white border border-[#8D6E63]/20 rounded-full text-xs text-[#5D4037] shadow-sm hover:bg-[#8D6E63] hover:text-white transition-colors cursor-default">#다양한_시선</span>
                     </div>
-                    <p class="mt-8 text-[11px] text-gray-500 leading-relaxed italic">
-                        "우리는 주로 삶의 본질을 다루는 문학에 깊은 애정을 보입니다. 텍스트 너머의 여백을 찾는 시간을 통해 서로의 취향을 공유하고 있습니다."
-                    </p>
+                    <div class="mt-8 p-5 bg-white/50 rounded-lg border border-[#8D6E63]/10">
+                        <p class="text-[12px] text-gray-600 leading-relaxed italic">
+                            "고전 문학부터 현대 사회, 그리고 과학 기술이 던지는 윤리적 질문까지 폭넓은 주제를 탐구합니다. 다양한 장르를 넘나들며 인간과 사회의 본질을 묻고, 정답 없는 대화
+                            속에서 생각의 여백을 넓혀갑니다."
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="py-24 bg-white scroll-mt-24">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <h2
+                    class="text-[#5D4037] text-2xl font-serif italic tracking-widest border-b border-[#5D4037]/30 inline-block pb-2 uppercase">
+                    Our Moments</h2>
+                <p class="text-gray-400 text-[11px] mt-4 tracking-widest uppercase">여백을 채워가는 우리의 시간들</p>
+            </div>
+
+            <div class="space-y-12">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 reveal delay-100">
+                    <div class="md:col-span-2 md:row-span-2 overflow-hidden rounded-lg shadow-sm transition-transform duration-500 hover:scale-[1.02] hover:shadow-lg cursor-zoom-in"
+                        onclick="openLightbox(this.querySelector('img').src)">
+                        <img src="our_moments/KakaoTalk_20250401_100146628_03.jpg"
+                            class="w-full h-full object-cover aspect-video" alt="Meeting photo">
+                    </div>
+                    <div class="overflow-hidden rounded-lg shadow-sm transition-transform duration-500 hover:scale-[1.03] hover:shadow-lg cursor-zoom-in"
+                        onclick="openLightbox(this.querySelector('img').src)">
+                        <img src="our_moments/KakaoTalk_20250427_194914927_02.jpg"
+                            class="w-full h-full object-cover aspect-square" alt="Meeting photo">
+                    </div>
+                    <div class="overflow-hidden rounded-lg shadow-sm transition-transform duration-500 hover:scale-[1.03] hover:shadow-lg cursor-zoom-in"
+                        onclick="openLightbox(this.querySelector('img').src)">
+                        <img src="our_moments/KakaoTalk_20250602_223442409.jpg"
+                            class="w-full h-full object-cover aspect-square" alt="Meeting photo">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 reveal delay-200">
+                    <div class="overflow-hidden rounded-lg shadow-sm transition-transform duration-500 hover:scale-[1.03] hover:shadow-lg cursor-zoom-in"
+                        onclick="openLightbox(this.querySelector('img').src)">
+                        <img src="our_moments/KakaoTalk_20250727_171311368_01.jpg"
+                            class="w-full h-full object-cover aspect-square" alt="Meeting photo">
+                    </div>
+                    <div class="md:col-span-2 md:row-span-2 overflow-hidden rounded-lg shadow-sm transition-transform duration-500 hover:scale-[1.02] hover:shadow-lg cursor-zoom-in"
+                        onclick="openLightbox(this.querySelector('img').src)">
+                        <img src="our_moments/KakaoTalk_20250602_223447235.jpg"
+                            class="w-full h-full object-cover aspect-video" alt="Meeting photo">
+                    </div>
+                    <div class="overflow-hidden rounded-lg shadow-sm transition-transform duration-500 hover:scale-[1.03] hover:shadow-lg cursor-zoom-in"
+                        onclick="openLightbox(this.querySelector('img').src)">
+                        <img src="our_moments/KakaoTalk_20251130_000330013_01.jpg"
+                            class="w-full h-full object-cover aspect-square" alt="Meeting photo">
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
 
-
-    <section id="gallery" class="py-24 bg-white scroll-mt-20">
-        <div class="max-w-4xl mx-auto px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-[#5D4037] text-xl font-serif italic tracking-widest border-b border-[#5D4037] inline-block pb-1 uppercase">Our Moments</h2>
-                <p class="text-gray-400 text-xs mt-4 tracking-widest">여백을 채워가는 우리의 시간들</p>
-            </div>
-
-            <div class="space-y-16"> <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="md:col-span-2 md:row-span-2 overflow-hidden rounded-sm border-[12px] border-white shadow-md rotate-[-1deg] transition-transform hover:rotate-0 cursor-zoom-in" onclick="openLightbox(this.querySelector('img').src)">
-                        <img src="our_moments/KakaoTalk_20250401_100146628_03.jpg" class="w-full h-full object-cover aspect-video" alt="Meeting photo">
-                    </div>
-                    <div class="overflow-hidden rounded-sm border-[10px] border-white shadow-md rotate-[2deg] transition-transform hover:rotate-0 cursor-zoom-in" onclick="openLightbox(this.querySelector('img').src)">
-                        <img src="our_moments/KakaoTalk_20250427_194914927_02.jpg" class="w-full h-full object-cover aspect-square" alt="Meeting photo">
-                    </div>
-                    <div class="overflow-hidden rounded-sm border-[10px] border-white shadow-md rotate-[-2deg] transition-transform hover:rotate-0 cursor-zoom-in" onclick="openLightbox(this.querySelector('img').src)">
-                        <img src="our_moments/KakaoTalk_20250602_223442409.jpg" class="w-full h-full object-cover aspect-square" alt="Meeting photo">
-                    </div>
-                    <div class="md:col-span-3 overflow-hidden rounded-sm border-[12px] border-white shadow-md mt-4 transition-transform hover:scale-[1.01] cursor-zoom-in" onclick="openLightbox(this.querySelector('img').src)">
-                        <div class="relative">
-                            <img src="our_moments/KakaoTalk_20250602_223448637.jpg" class="w-full h-64 object-cover" alt="Group photo">
-                            <div class="absolute bottom-4 right-4 text-white font-serif italic text-lg drop-shadow-md tracking-wider">2025. 05. 31</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="overflow-hidden rounded-sm border-[10px] border-white shadow-md rotate-[-2deg] transition-transform hover:rotate-0 cursor-zoom-in" onclick="openLightbox(this.querySelector('img').src)">
-                        <img src="our_moments/KakaoTalk_20250727_171311368_01.jpg" class="w-full h-full object-cover aspect-square" alt="Meeting photo">
-                    </div>
-                    <div class="md:col-span-2 md:row-span-2 overflow-hidden rounded-sm border-[12px] border-white shadow-md rotate-[1deg] transition-transform hover:rotate-0 cursor-zoom-in" onclick="openLightbox(this.querySelector('img').src)">
-                        <img src="our_moments/KakaoTalk_20250602_223447235.jpg" class="w-full h-full object-cover aspect-video" alt="Meeting photo">
-                    </div>
-                    <div class="overflow-hidden rounded-sm border-[10px] border-white shadow-md rotate-[2deg] transition-transform hover:rotate-0 cursor-zoom-in" onclick="openLightbox(this.querySelector('img').src)">
-                        <img src="our_moments/KakaoTalk_20251130_000330013_01.jpg" class="w-full h-full object-cover aspect-square" alt="Meeting photo">
-                    </div>
-                    <div class="md:col-span-3 overflow-hidden rounded-sm border-[12px] border-white shadow-md mt-4 transition-transform hover:scale-[1.01] cursor-zoom-in" onclick="openLightbox(this.querySelector('img').src)">
-                        <div class="relative">
-                            <img src="our_moments/KakaoTalk_20250401_100146628_03.jpg" class="w-full h-64 object-cover" alt="Group photo">
-                            <div class="absolute bottom-4 right-4 text-white font-serif italic text-lg drop-shadow-md tracking-wider">2025. 03. 29</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="space-y-16"> <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="md:col-span-2 md:row-span-2 overflow-hidden rounded-sm border-[12px] border-white shadow-md rotate-[-1deg] transition-transform hover:rotate-0 cursor-zoom-in" onclick="openLightbox(this.querySelector('img').src)">
-                        <img src="our_moments/26.03.28.jpg" class="w-full h-full object-cover aspect-video" alt="Meeting photo">
-                    </div>
-                    
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <div id="book-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-        <div class="bg-[#FDFCFB] max-w-2xl w-full rounded-lg shadow-2xl overflow-hidden relative flex flex-col md:flex-row">
-            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 z-10 text-2xl">&times;</button>
-            <div class="md:w-1/2 h-64 md:h-auto overflow-hidden">
+    <!-- Modals -->
+    <div id="book-modal"
+        class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-opacity">
+        <div class="bg-[#FDFCFB] max-w-4xl w-full max-h-[95vh] md:h-[650px] rounded-xl shadow-2xl overflow-hidden relative flex flex-col md:flex-row transform scale-95 transition-transform duration-300"
+            id="book-modal-content">
+            <button onclick="closeModal()"
+                class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 z-10 text-3xl bg-white/50 w-8 h-8 flex items-center justify-center rounded-full transition-colors">&times;</button>
+            <div class="md:w-5/12 h-56 md:h-full shrink-0 overflow-hidden bg-gray-100">
                 <img id="modal-img" src="" class="w-full h-full object-cover">
             </div>
-            <div class="md:w-1/2 p-8 overflow-y-auto max-h-[80vh]">
-                <h3 id="modal-title" class="text-2xl font-serif text-[#3E2723] mb-1"></h3>
-                <p id="modal-author" class="text-sm text-[#8D6E63] mb-6"></p>
-                <div class="mb-6">
-                    <h4 class="text-xs font-bold text-gray-400 mb-2 uppercase">Main Plot</h4>
-                    <p id="modal-summary" class="text-gray-700 text-sm leading-relaxed"></p>
-                </div>
-                <div class="bg-[#F4F1EA] p-4 rounded-md">
-                    <h4 class="text-xs font-bold text-[#5D4037] mb-2 uppercase">Discussion Theme</h4>
-                    <p id="modal-topic" class="text-[#3E2723] text-sm italic font-serif"></p>
+            <div class="md:w-7/12 p-6 md:p-10 overflow-y-auto flex-1 hide-scrollbar">
+
+                <!-- Tab Headers -->
+                <div class="flex space-x-6 border-b border-gray-200 mb-6">
+                    <button onclick="switchModalTab('info')" id="tab-info-btn"
+                        class="pb-2 text-sm font-bold text-[#8D6E63] border-b-2 border-[#8D6E63] transition-colors">Book
+                        Info</button>
+                    <button onclick="switchModalTab('records')" id="tab-records-btn"
+                        class="pb-2 text-sm font-bold text-gray-400 border-b-2 border-transparent hover:text-gray-600 transition-colors">Our
+                        Records</button>
                 </div>
 
-                <div id="modal-material-container" class="mt-6">
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Reference Material</h4>
-                    <a id="modal-material-link" href="#" target="_blank" 
-                       class="inline-flex items-center justify-center w-full py-3 px-4 bg-[#8D6E63] text-white rounded-md text-sm font-medium hover:bg-[#6D4C41] transition-colors">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                        </svg>
-                        토론 자료 확인하기 (PDF)
-                    </a>
+                <!-- Info Tab -->
+                <div id="tab-info">
+                    <span id="modal-genre"
+                        class="inline-block px-3 py-1 bg-[#8D6E63]/10 text-[#8D6E63] text-[10px] rounded-full mb-4 font-bold tracking-wider"></span>
+                    <h3 id="modal-title" class="text-2xl md:text-3xl font-serif text-[#3E2723] mb-2 leading-tight"></h3>
+                    <p id="modal-author" class="text-sm font-bold text-[#8D6E63] mb-1"></p>
+                    <p id="modal-author-info"
+                        class="text-xs text-gray-500 mb-8 border-b border-gray-200 pb-4 leading-relaxed"></p>
+
+                    <div class="mb-8">
+                        <h4 class="text-[11px] font-bold text-gray-400 mb-3 uppercase tracking-widest">Story & Review
+                        </h4>
+                        <p id="modal-full-summary" class="text-gray-700 text-sm leading-relaxed"></p>
+                    </div>
                 </div>
+
+                <!-- Records Tab -->
+                <div id="tab-records" class="hidden">
+                    <div class="bg-[#F4F1EA] p-6 rounded-lg border border-[#8D6E63]/20 mb-6">
+                        <h4
+                            class="text-[11px] font-bold text-[#8D6E63] mb-3 uppercase tracking-widest flex items-center">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
+                                </path>
+                            </svg>
+                            Our Discussion Topic
+                        </h4>
+                        <p id="modal-topic" class="text-[#3E2723] text-[15px] italic font-serif leading-relaxed"></p>
+                    </div>
+
+                    <div class="mb-8">
+                        <h4
+                            class="text-[11px] font-bold text-gray-400 mb-4 uppercase tracking-widest border-b border-gray-200 pb-2">
+                            Questions from Presenter</h4>
+                        <ul id="modal-questions"
+                            class="space-y-4 text-[13px] text-gray-700 leading-relaxed font-medium">
+                            <!-- Questions rendered here -->
+                        </ul>
+                    </div>
+
+                    <div id="modal-material-container">
+                        <h4 class="text-[11px] font-bold text-gray-400 mb-3 uppercase tracking-widest">Discussion
+                            Material</h4>
+                        <a id="modal-material-link" href="#" target="_blank"
+                            class="flex items-center justify-center w-full py-4 px-4 bg-white border border-[#8D6E63]/30 text-[#5D4037] rounded-lg text-sm font-bold hover:bg-[#8D6E63] hover:text-white transition-all shadow-sm hover:shadow-md group">
+                            <svg class="w-5 h-5 mr-2 text-[#8D6E63] group-hover:text-white transition-colors"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                </path>
+                            </svg>
+                            발제문 및 토론 자료 원본 열람하기
+                        </a>
+                    </div>
+
+                    <div id="modal-no-material" class="hidden text-center py-8">
+                        <p class="text-sm text-gray-400 italic">등록된 토론 자료 원본이 없습니다.</p>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 
-    <div id="lightbox-modal" class="fixed inset-0 z-[60] hidden items-center justify-center bg-black/90 p-4 backdrop-blur-sm cursor-zoom-out" onclick="closeLightbox()">
-        <button class="absolute top-6 right-6 text-white text-4xl hover:text-gray-300">&times;</button>
-        <img id="lightbox-img" src="" class="max-w-full max-h-[90vh] shadow-2xl transition-transform duration-300 ease-in-out">
+    <div id="lightbox-modal"
+        class="fixed inset-0 z-[60] hidden items-center justify-center bg-black/95 p-4 backdrop-blur-md cursor-zoom-out"
+        onclick="closeLightbox()">
+        <button
+            class="absolute top-6 right-6 text-white/70 text-4xl hover:text-white transition-colors">&times;</button>
+        <img id="lightbox-img" src="" class="max-w-full max-h-[90vh] shadow-2xl rounded-sm">
     </div>
 
-    <footer class="bg-[#3E2723] text-[#F4F1EA] py-12 px-6 mt-20">
-        <div class="max-w-6xl mx-auto text-center font-serif opacity-70">
-            <p>© 2026 여백의 시간. 기록을 멈추지 마세요.</p>
+    <!-- Footer -->
+    <footer class="bg-[#271815] text-[#F4F1EA] py-16 px-6">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-center md:text-left">
+                <h3 class="font-serif text-xl mb-2 text-white/90">여백의 시간</h3>
+                <p class="text-xs text-white/50 tracking-widest">The MARGIN</p>
+            </div>
+            <div class="text-center md:text-right text-xs text-white/40 font-serif">
+                <p>© 2026 여백의 시간. All rights reserved.</p>
+                <p class="mt-1">기록을 멈추지 마세요.</p>
+            </div>
         </div>
     </footer>
 
+    <!-- Scripts -->
     <script>
-        // 일정 데이터
+        // Data Configuration
         const schedules = [
-            { date: "2026. 04. 25", status: "Upcoming", title: "4월 정기 모임", book: "인어가 잠든 집", location: "워크토크 잠실점", time: "15:00 - 18:00" },
+            { date: "미정", status: "Upcoming", title: "5월 정기 모임", book: "돈 없이 살 수 없는 것들", location: "미정", time: "미정" },
+            { date: "2026. 04. 25", status: "past", title: "4월 정기 모임", book: "인어가 잠든 집", location: "워크토크 잠실점", time: "15:00 - 18:00" },
             { date: "2026. 03. 28", status: "past", title: "3월 정기 모임", book: "천 개의 파랑", location: "공간너섬 용산역점", time: "14:00 - 17:00" },
             { date: "2026. 02. 07", status: "Past", title: "2026년 OT", book: "새 멤버 소개 및 앞으로의 활동 계획", location: "공간너섬 용산역점", time: "17:00 - 21:00" },
             { date: "2026. 01. 03", status: "Past", title: "1월 정기 모임", book: "죄와 벌", location: "리얼컨퍼런스 용산점", time: "14:30 - 18:00" },
@@ -347,305 +557,468 @@
             { date: "2025. 01. 25", status: "Past", title: "01월 정기 모임", book: "국가론", location: "엘리멘터리 강남점", time: "13:00 - 17:00" }
         ];
 
-        // 책 데이터 (materialUrl 포함)
         const books = [
             {
                 title: "국가론",
                 author: "플라톤",
+                authorInfo: "고대 그리스의 철학자. 소크라테스의 제자이자 아리스토텔레스의 스승으로, 서양 철학의 근간을 마련한 인물.",
                 genre: "인문/철학",
                 image: "images_book/the theory of statehood.jpg",
-                summary: "플라톤이 제시하는 이상 국가와 정의의 본질에 대한 고전적 고찰.",
+                fullSummary: "소크라테스와의 대화 형식으로 구성된 이 책은, 이상적인 국가의 모습과 정의의 본질, 그리고 철학자가 통치해야 하는 이유에 대해 깊이 있게 탐구합니다.",
                 topic: "현대 사회에서 우리가 지향해야 할 정의로운 공동체란 무엇인가?",
+                questions: [
+                    "1. 소크라테스가 말하는 '정의'란 개인과 국가에 각각 어떤 의미인가요?",
+                    "2. 철학인 왕이 다스리는 '칼리폴리스(Kallipolis)'는 현실적으로 가능한가요?",
+                    "3. 동굴의 비유가 현대 사회에서 우리에게 시사하는 바는 무엇일까요?"
+                ],
                 materialUrl: "https://drive.google.com/file/d/1aIPAwqJcYah7HqXQIeDV3NIaSjyqPkT6/view?usp=sharing"
             },
             {
                 title: "경제학 콘서트 2",
                 author: "팀 하포드",
+                authorInfo: "일상 속에 숨겨진 경제학의 원리를 쉽고 재미있게 풀어내는 영국의 저명한 경제학자이자 저널리스트.",
                 genre: "사회/경제",
                 image: "images_book/경제학 콘서트2.jpg",
-                summary: "세상 돌아가는 이치를 경제학자의 시선으로 명쾌하게 분석합니다.",
+                fullSummary: "우리의 일상적인 결정, 나아가 범죄나 정치 현상 등 겉보기에는 경제학이 아닌 것 같은 문제들조차 어떻게 경제학적 논리로 설명될 수 있는지를 흥미롭게 보여줍니다.",
                 topic: "일상 속의 복잡한 문제들을 경제학적으로 해결해본 경험이 있나요?",
+                questions: [
+                    "1. 합리적인 선택이라고 생각했던 결정이 나중에 비합리적으로 밝혀진 경험이 있나요?",
+                    "2. 보이지 않는 유인(Incentive)이 사람들의 행동을 긍정적 혹은 부정적으로 바꾼 사례는?",
+                    "3. 경제학적 시선으로 세상을 보는 것이 우리의 삶을 더 낫게 만들 수 있을까요?"
+                ],
                 materialUrl: "discussion materials/경제학_콘서트2_발제문.pdf"
             },
             {
                 title: "모순",
                 author: "양귀자",
+                authorInfo: "인간 삶의 세밀한 감정과 사회적 모순을 통찰력 있게 그려내는 한국의 대표적인 소설가.",
                 genre: "문학/소설",
                 image: "images_book/모순_양귀자.jpg",
-                summary: "인생의 모순과 선택을 통해 성장해가는 주인공 안진진의 이야기.",
+                fullSummary: "쌍둥이 이모와 어머니의 상반된 삶, 그리고 20대 후반 안진진의 연애와 결혼 선택을 통해 인생에 내재된 근원적인 모순과 예측 불가능성을 그려낸 명작입니다.",
                 topic: "우리의 삶을 지탱하는 모순과 불행은 어떤 의미를 갖는가?",
+                questions: [
+                    "1. 안진진의 마지막 선택(결혼 상대)에 대해 어떻게 생각하시나요?",
+                    "2. 쌍둥이 이모와 어머니 중, 나의 삶은 어느 쪽에 더 가깝다고 느끼나요?",
+                    "3. 우리 삶에서 '모순'을 받아들임으로써 얻게 되는 것은 무엇일까요?"
+                ],
                 materialUrl: "discussion materials/모순_발제문.pdf"
             },
             {
                 title: "셰임 머신",
                 author: "캐시 오닐",
+                authorInfo: "수학자이자 데이터 과학자. 알고리즘과 빅데이터가 사회적 불평등을 어떻게 악화시키는지 연구하는 학자.",
                 genre: "사회/경제",
                 image: "images_book/쎼임머신.jpg",
-                summary: "사회적 수치심이 어떻게 시스템화되고 산업으로 이용되는지 파헤칩니다.",
+                fullSummary: "현대 사회와 디지털 플랫폼이 어떻게 사람들의 '수치심'을 무기화하여 이익을 창출하고 대중을 통제하는지 날카롭게 해부합니다.",
                 topic: "디지털 시대의 '수치심 산업'에 대항해 개인의 존엄을 지키는 방법은?",
+                questions: [
+                    "1. 소셜 미디어에서 타인에게 수치심을 주거나, 반대로 수치심을 느껴본 경험이 있나요?",
+                    "2. '수치심 산업'에 대항하여 개인이 취할 수 있는 가장 효과적인 방어책은 무엇일까요?",
+                    "3. 건강한 사회적 규범과 폭력적인 '조리돌림'의 경계는 어디일까요?"
+                ],
                 materialUrl: "discussion materials/셰임머신_발제문.pdf"
             },
             {
                 title: "나쁜 사마리안인들",
                 author: "장하준",
+                authorInfo: "세계적인 경제학자. 주류 경제학의 통념에 도전하며 개발도상국을 위한 현실적인 경제 정책을 주장함.",
                 genre: "사회/경제",
                 image: "images_book/나쁜사마리아인들.jpg",
-                summary: "부자 나라들이 가난한 나라들에 강요하는 경제 정책의 위선을 비판합니다.",
+                fullSummary: "자유무역과 세계화가 개발도상국에 진정으로 도움이 되는지 묻고, 선진국들이 과거 자신들이 썼던 보호무역이라는 '사다리'를 걷어차고 있음을 비판합니다.",
                 topic: "자유무역과 경제 성장의 관계에 대해 우리는 어떤 관점을 가져야 할까?",
+                questions: [
+                    "1. 자유무역주의가 진정으로 '공정'한 룰을 제공하고 있다고 생각하나요?",
+                    "2. 선진국들의 '사다리 걷어차기'에 맞서 개발도상국은 어떤 전략을 취해야 할까요?",
+                    "3. 개인의 삶에서도 '사다리 걷어차기'와 같은 위선적 구조를 경험한 적이 있나요?"
+                ],
                 materialUrl: "discussion materials/나쁜_사마리아인_발제문.pdf"
             },
             {
                 title: "페스트",
                 author: "알베르 카뮈",
+                authorInfo: "프랑스의 실존주의 문학을 대표하는 소설가이자 사상가. 노벨 문학상 수상자.",
                 genre: "문학/소설",
                 image: "images_book/페스트.jpg",
-                summary: "재앙에 맞서는 인간들의 다양한 태도와 연대의 중요성을 다룹니다.",
+                fullSummary: "알제리의 작은 도시 오랑에 페스트가 퍼지면서 폐쇄된 도시 안에서 질병과 죽음에 직면한 다양한 인간 군상의 태도와 연대의 의미를 조명합니다.",
                 topic: "예기치 못한 거대한 재앙 앞에서 인간이 취해야 할 가장 숭고한 자세는?",
+                questions: [
+                    "1. 소설 속 등장인물(리외, 타루, 랑베르 등) 중 가장 공감 가는 인물은 누구인가요?",
+                    "2. 재앙 속에서도 자신의 직분을 다하는 리외의 '성실성'이 주는 울림은 무엇인가요?",
+                    "3. 현대 사회에서 '페스트'가 상징하는 것은 무엇일까요?"
+                ],
                 materialUrl: "https://magical-health-414.notion.site/2ec3280b7f8380f284b3fa2b2a9e9acd?source=copy_link"
             },
             {
                 title: "그리스인 조르바",
                 author: "니코스 카잔차키스",
+                authorInfo: "현대 그리스 문학을 대표하는 작가. 인간의 자유와 영혼의 구원에 평생을 바친 사상가.",
                 genre: "인문/철학",
                 image: "images_book/그리스인 조르바.jpg",
-                summary: "자유로운 영혼의 소유자 조르바가 들려주는 생의 찬가.",
+                fullSummary: "지식인인 '나'와 육체적이고 야성적인 본능으로 살아가는 자유인 '조르바'의 만남을 통해 진정한 삶의 기쁨과 자유의 의미를 묻습니다.",
                 topic: "진정한 '자유'란 무엇이며, 우리는 삶을 얼마나 뜨겁게 사랑하고 있는가?",
+                questions: [
+                    "1. 내가 생각하는 진정한 '자유'란 무엇이며, 나는 현재 얼마나 자유로운가요?",
+                    "2. 이성과 논리로 무장한 '나'와 직관으로 살아가는 '조르바' 중 나는 어느 쪽에 더 가깝나요?",
+                    "3. 책을 읽는다는 행위가 조르바의 시선에서는 어떻게 비칠까요?"
+                ],
                 materialUrl: "discussion materials/그리스인_조르바_발제문.pdf"
             },
             {
                 title: "그대를 사랑합니다",
                 author: "강풀",
+                authorInfo: "따뜻한 시선과 탄탄한 스토리텔링으로 수많은 독자의 사랑을 받는 웹툰 1세대 작가.",
                 genre: "에세이/예술",
                 image: "images_book/그대를사랑합니다.jpg",
-                summary: "노년의 사랑과 삶, 이별을 따뜻하고 뭉클한 시선으로 그려낸 작품.",
+                fullSummary: "노년에 찾아온 풋풋한 사랑, 그리고 평생을 헌신한 노부부의 아프고도 깊은 사랑을 통해 삶과 이별에 대한 따뜻한 시선을 보여줍니다.",
                 topic: "삶의 끝자락에서도 변하지 않는 소중한 가치는 무엇일까요?",
+                questions: [
+                    "1. 나이가 들어감에 따라 사랑의 모양과 온도는 어떻게 변해간다고 생각하시나요?",
+                    "2. 만약 내 남은 생애가 얼마 남지 않았다면, 누구와 어떤 사랑을 나누고 싶나요?",
+                    "3. 가족과 연인을 떠나보낼 때, 가장 이상적인 '이별의 방식'은 무엇일까요?"
+                ],
                 materialUrl: "#"
             },
             {
                 title: "물고기는 존재하지 않는다",
                 author: "룰루 밀러",
+                authorInfo: "과학 전문 기자이자 논픽션 작가. 과학적 사실과 개인적인 에세이를 교차시키며 철학적 질문을 던짐.",
                 genre: "에세이/예술",
                 image: "images_book/물고기.jpg",
-                summary: "혼돈의 세계에서 질서를 찾으려 했던 과학자의 삶과 그 반전의 기록.",
+                fullSummary: "분류학자 데이비드 스타 조던의 삶을 추적하는 과정에서, 자연의 질서란 인간이 만들어낸 허상이며 그 혼돈 속에서 오히려 삶의 의미를 찾게 되는 반전의 논픽션.",
                 topic: "우리가 믿어온 질서가 무너질 때, 우리는 어디서 희망을 찾아야 하는가?",
-                materialUrl: "discussion materials\물고기는 존재하지 않는다_발제문.pdf"
+                questions: [
+                    "1. 오랫동안 굳게 믿어왔던 '진실'이나 '질서'가 무너졌을 때, 어떻게 극복하셨나요?",
+                    "2. 자연에 '위계'가 없다는 사실이 인간 사회에 던지는 메시지는 무엇일까요?",
+                    "3. 우주적 관점에서 우리가 먼지 같은 존재라면, 무엇이 우리 삶을 의미 있게 만드나요?"
+                ],
+                materialUrl: "https://drive.google.com/file/d/1_57zq2R8aLEZGq-0HBugB4XSVi8UkoeL/view?usp=drive_link"
             },
             {
                 title: "죄와 벌",
                 author: "표도르 도스토예프스키",
+                authorInfo: "인간 심연의 어두운 본성과 구원을 탐구한 19세기 러시아 문학의 거장.",
                 genre: "문학/소설",
                 image: "images_book/죄와벌.jpg",
-                summary: "범죄를 저지른 인간의 심리적 고뇌와 구원의 과정을 다룬 대작.",
+                fullSummary: "가난한 대학생 라스콜니코프가 '비범인은 평범한 인간의 도덕을 초월할 권리가 있다'는 사상에 빠져 살인을 저지른 후 겪는 처절한 심리적 고뇌와 소냐를 통한 구원의 과정.",
                 topic: "인간이 법과 도덕을 초월할 수 있는 권리를 가질 수 있는가?",
+                questions: [
+                    "1. 비범한 목적을 위해 평범한 도덕이나 법을 위반해도 된다는 사상에 대해 어떻게 생각하나요?",
+                    "2. 라스콜니코프가 죄책감을 느끼기 시작한 근본적인 이유는 무엇일까요?",
+                    "3. 고통과 속죄를 통해서만 인간이 구원받을 수 있다는 관점에 동의하시나요?"
+                ],
                 materialUrl: "discussion materials/죄와벌_발제문.pdf"
             },
             {
                 title: "천 개의 파랑",
                 author: "천선란",
+                authorInfo: "상상력과 따뜻한 시선으로 한국 SF 문학의 새로운 장을 열어가고 있는 소설가.",
                 genre: "과학/SF",
                 image: "images_book/천개의파랑.jpg",
-                summary: "부서진 로봇 '콜리'와 안락사 위기의 경주마 '투데이', 그리고 상처를 안고 사는 사람들이 나누는 따뜻한 연대와 회복의 이야기.",
+                fullSummary: "폐기될 위기에 처한 휴머노이드 기수 '콜리'와 안락사를 앞둔 경주마 '투데이', 그리고 휠체어를 타는 은혜와 그 가족들이 서로의 상처를 안아주며 연대하는 감동적인 SF.",
                 topic: "기술이 발전한 미래에도 변하지 않는 '다정함'과 '교감'의 가치는 무엇인가?",
+                questions: [
+                    "1. 로봇인 콜리가 인간보다 더 '인간적인' 다정함을 보여주는 이유는 무엇일까요?",
+                    "2. 효율성과 속도만을 강조하는 사회에서 '천천히 달리는 연습'이 의미하는 바는?",
+                    "3. 다름과 결핍을 가진 존재들이 연대함으로써 만들어내는 힘은 어느 정도일까요?"
+                ],
                 materialUrl: "https://drive.google.com/file/d/1MgEJXjFB9X_xvJuHNCCCWQo91SoJy3jO/view?usp=drive_link"
             },
             {
                 title: "인어가 잠든 집",
                 author: "히가시노 게이고",
+                authorInfo: "섬세한 심리 묘사와 사회적 이슈를 결합하여 깊은 여운을 남기는 일본의 미스터리 대가.",
                 genre: "소설/미스터리",
                 image: "images_book/인어가 잠든 집.jpg",
-                summary: "갑작스러운 사고로 뇌사 상태에 빠진 딸과 그 죽음을 인정하지 못하는 부모가 기술의 힘을 빌려 생명을 연장하며 벌어지는 윤리적 갈등과 슬픔의 기록.",
+                fullSummary: "갑작스러운 사고로 뇌사 상태에 빠진 딸과 그 죽음을 인정하지 못하는 부모가 기술의 힘을 빌려 생명을 연장하며 벌어지는 윤리적 갈등과 슬픔의 기록.",
                 topic: "과학 기술이 삶을 연장할 때, 죽음의 경계는 어디이며 우리는 무엇을 생명이라 부를 수 있는가?",
+                questions: [
+                    "1. 나라면 뇌사 상태의 아이를 기술의 힘으로 연명시킬 것인가요?",
+                    "2. 이 작품에서 묻는 '인간의 죽음을 판정하는 기준'은 과학인가요, 사랑인가요?",
+                    "3. 타인의 슬픔에 대해 우리가 어디까지 간섭하고 판단할 수 있을까요?"
+                ],
                 materialUrl: " "
             }
         ];
 
-        // // 일정 렌더링       
-        // const scheduleList = document.getElementById('schedule-list');
-        // const maxVisible = 3; // 처음에 보여줄 개수
+        const quotesData = [
+            { text: "스스로 통치하려 하지 않는 가장 큰 벌은, 자기보다 못한 사람의 지배를 받는 것이다.", book: "국가론" },
+            { text: "세상이 불공평해 보이는 것은 우리가 그 이면의 논리를 보지 못하기 때문이다. 합리성은 생각보다 깊은 곳에 숨어 있다.", book: "경제학 콘서트 2" },
+            { text: "인생은 탐구하면서 살아가는 것이 아니라, 살아가면서 탐구하는 것이다. 실수는 되풀이된다. 그것이 인생이다.", book: "모순" },
+            { text: "수치심은 수익을 창출하는 강력한 도구다. 그것은 우리의 주의를 끌고, 우리를 분열시키며, 결국 보이지 않는 권력을 살찌운다.", book: "셰임 머신" },
+            { text: "강자들은 항상 자신들이 올라온 사다리를 걷어차 버린다. 그것이 그들이 정상의 자리를 지키는 가장 쉬운 방법이기 때문이다.", book: "나쁜 사마리아인들" },
+            { text: "이 모든 일은 영웅주의와는 상관이 없습니다. 페스트와 싸우는 유일한 방법은 성실성입니다.", book: "페스트" },
+            { text: "나는 아무것도 바라지 않는다. 나는 아무것도 두려워하지 않는다. 나는 자유다.", book: "그리스인 조르바" },
+            { text: "당신을 만나서, 내 남은 인생이 정말 따뜻했소. 그대를... 사랑합니다.", book: "그대를 사랑합니다" },
+            { text: "어떤 사람에게 민들레는 잡초처럼 보일지 모르지만, 다른 사람에게는 약초가 될 수 있다. 중요성은 우리가 부여하는 것이다.", book: "물고기는 존재하지 않는다" },
+            { text: "인간에게는 적어도 단 한 군데쯤은, 자기를 불쌍히 여겨 줄 곳이, 아무 조건 없이 받아줄 곳이 있어야만 하는 법이니까요.", book: "죄와 벌" },
+            { text: "천천히 달리는 연습을 할 거야. 다치지 않고 멀리 가기 위해서.", book: "천 개의 파랑" },
+            { text: "사랑하는 사람의 죽음을 인정하는 일, 그것은 남겨진 자가 해야 할 가장 잔인하고도 숭고한 의무일지도 모른다.", book: "인어가 잠든 집" }
+        ];
 
-        // schedules.forEach((item, index) => {
-        //     const isUpcoming = item.status === "Upcoming";
-        //     // 4번째(인덱스 3) 이후의 일정은 hidden 클래스로 숨김 처리
-        //     const hiddenClass = index >= maxVisible ? 'hidden extra-schedule' : '';
-            
-        //     scheduleList.innerHTML += `
-        //         <div class="relative pl-8 timeline-dot ${hiddenClass}">
-        //             <span class="text-xs font-bold ${isUpcoming ? 'text-amber-700' : 'text-gray-400'} uppercase tracking-widest">${item.date} ${isUpcoming ? '• NEXT' : ''}</span>
-        //             <h3 class="text-xl font-serif text-[#3E2723] mt-1">${item.title} : <span class="italic text-lg">"${item.book}"</span></h3>
-        //             <p class="text-sm text-gray-500 mt-2">📍 ${item.location} | ⏰ ${item.time}</p>
-        //         </div>
-        //     `;
-        // });
+        // 1. Scroll Animations
+        function initScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.1 });
 
-        // // 더보기/접기 버튼 생성
-        // if (schedules.length > maxVisible) {
-        //     const moreBtnContainer = document.createElement('div');
-        //     moreBtnContainer.id = 'schedule-more-btn-container';
-        //     moreBtnContainer.className = 'mt-12 text-center';
-        //     // 더보기 버튼에 개수 표현
-        //     // moreBtnContainer.innerHTML = `
-        //     //     <button id="toggle-btn" onclick="toggleSchedules()" class="px-6 py-2 border border-[#8D6E63] text-[#8D6E63] rounded-full text-sm hover:bg-[#8D6E63] hover:text-white transition-all duration-300">
-        //     //         과거 일정 더보기 (+${schedules.length - maxVisible})
-        //     //     </button>
-        //     // `;
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
 
-        //     // 더보기 버튼에 개수 표현 안함
-        //     moreBtnContainer.innerHTML = `
-        //         <button id="toggle-btn" onclick="toggleSchedules()" class="px-6 py-2 border border-[#8D6E63] text-[#8D6E63] rounded-full text-sm hover:bg-[#8D6E63] hover:text-white transition-all duration-300">
-        //             과거 일정 더보기
-        //         </button>
-        //     `;
-        //     scheduleList.after(moreBtnContainer);
-        // }
+        // 2. Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('nav-scrolled');
+            } else {
+                nav.classList.remove('nav-scrolled');
+            }
+        });
 
-        // // 토글 함수
-        // function toggleSchedules() {
-        //     const extras = document.querySelectorAll('.extra-schedule');
-        //     const btn = document.getElementById('toggle-btn');
-        //     const isHidden = extras[0].classList.contains('hidden');
+        // 3. Quotes Renderer
+        function renderQuotes() {
+            const container = document.getElementById('quote-container');
+            container.innerHTML = quotesData.map(q => `
+                <div class="min-w-[300px] md:min-w-[400px] bg-white/5 border border-white/10 p-8 rounded-lg backdrop-blur-sm hover:bg-white/10 transition-colors">
+                    <svg class="w-8 h-8 text-[#8D6E63] mb-4 opacity-70" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+                    <p class="text-sm md:text-base leading-relaxed mb-6 italic">"${q.text}"</p>
+                    <p class="text-xs text-[#8D6E63] font-bold text-right tracking-widest">- ${q.book} -</p>
+                </div>
+            `).join('');
+        }
 
-        //     if (isHidden) {
-        //         // 펼치기
-        //         extras.forEach(el => el.classList.remove('hidden'));
-        //         btn.innerText = '일정 접기';
-        //     } else {
-        //         // 접기
-        //         extras.forEach(el => el.classList.add('hidden'));
-        //         btn.innerText = `과거 일정 더보기 (+${schedules.length - maxVisible})`;
-                
-        //         // 접었을 때 섹션 상단으로 부드럽게 이동 (사용자 배려)
-        //         document.getElementById('schedule').scrollIntoView({ behavior: 'smooth' });
-        //     }
-        // }
+        // 4. Accordion Schedules
         function renderAccordionSchedules() {
-            const today = new Date(); // 현재 시간
+            const today = new Date();
             const container = document.getElementById('accordion-container');
             const grouped = schedules.reduce((acc, item) => {
-                // "2026. 02. 07" 형식을 Date 객체로 변환 (비교를 위해)
                 const eventDate = new Date(item.date.replace(/\. /g, '-').replace(/\./g, '-'));
-                // 오늘 날짜보다 이후이면 Upcoming으로 간주
-                item.currentStatus = eventDate > today ? 'Upcoming' : 'Completed';
-                
-                const year = item.date.split('.')[0];
+                item.currentStatus = eventDate > today || item.date === "미정" ? 'Upcoming' : 'Completed';
+
+                const year = item.date === "미정" ? today.getFullYear().toString() : item.date.split('.')[0];
                 if (!acc[year]) acc[year] = [];
                 acc[year].push(item);
                 return acc;
             }, {});
 
             const sortedYears = Object.keys(grouped).sort((a, b) => b - a);
-            
+
             container.innerHTML = sortedYears.map((year, index) => {
-                const isOpen = index === 0; // 최신 연도 자동 열림
+                const isOpen = index === 0;
                 return `
-                    <div class="border-b border-[#8D6E63]/20">
+                    <div class="border-b border-[#8D6E63]/20 bg-white rounded-lg px-6 shadow-sm mb-4 transition-all">
                         <button onclick="toggleAccordion('${year}')" class="w-full py-6 flex justify-between items-center text-[#3E2723] focus:outline-none group">
                             <span class="font-serif text-2xl group-hover:text-[#8D6E63] transition-colors">${year}</span>
-                            <svg id="icon-${year}" class="w-5 h-5 transition-transform duration-500 ${isOpen ? 'rotate-180' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg id="icon-${year}" class="w-5 h-5 transition-transform duration-500 ${isOpen ? 'rotate-180 text-[#8D6E63]' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        <div id="content-${year}" class="accordion-content ${index === 0 ? 'active' : ''} space-y-6">
+                        <div id="content-${year}" class="accordion-content ${isOpen ? 'active pb-6' : ''} space-y-6">
                         ${grouped[year].map(item => {
-                            const isUpcoming = item.currentStatus === 'Upcoming';
-                            return `
-                                <div class="pl-4 custom-border-left ${isUpcoming ? 'upcoming-highlight' : ''} pb-6 mb-2">
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-[10px] font-bold ${isUpcoming ? 'text-[#8D6E63]' : 'text-gray-400'} uppercase tracking-widest">${item.date}</span>
-                                        ${isUpcoming ? '<span class="animate-pulse text-[9px] bg-[#8D6E63] text-white px-2 py-0.5 rounded-full font-bold">UPCOMING</span>' : ''}
+                    const isUpcoming = item.currentStatus === 'Upcoming';
+                    return `
+                                <div class="pl-4 custom-border-left ${isUpcoming ? 'upcoming-highlight bg-[#8D6E63]/5' : ''} pb-4 mb-2">
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-[11px] font-bold ${isUpcoming ? 'text-[#8D6E63]' : 'text-gray-400'} uppercase tracking-widest">${item.date}</span>
+                                        ${isUpcoming ? '<span class="animate-pulse text-[9px] bg-[#8D6E63] text-white px-2.5 py-0.5 rounded-full font-bold">UPCOMING</span>' : ''}
                                     </div>
-                                    <h4 class="text-lg font-serif text-[#3E2723] mt-1">${item.title} : <span class="italic text-base">"${item.book}"</span></h4>
-                                    <p class="text-[11px] text-gray-500 mt-1">📍 ${item.location} | ⏰ ${item.time}</p>
+                                    <h4 class="text-lg md:text-xl font-serif text-[#3E2723] mt-2 mb-1">${item.title}</h4>
+                                    <p class="text-[13px] text-gray-600 font-medium mb-2">"${item.book}"</p>
+                                    <p class="text-[11px] text-gray-500 flex items-center gap-2">
+                                        <span>📍 ${item.location}</span>
+                                        <span class="text-gray-300">|</span>
+                                        <span>⏰ ${item.time}</span>
+                                    </p>
                                 </div>
                             `;
-                        }).join('')}
-                    </div>
+                }).join('')}
+                    </div></div>
                 `;
             }).join('');
         }
 
-        function toggleAccordion(year) {
+        window.toggleAccordion = function (year) {
             const content = document.getElementById(`content-${year}`);
             const icon = document.getElementById(`icon-${year}`);
-            
-            // active 클래스 토글 (CSS 애니메이션 작동)
-            content.classList.toggle('active');
-            icon.classList.toggle('rotate-180');
+
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                content.classList.remove('pb-6');
+                icon.classList.remove('rotate-180', 'text-[#8D6E63]');
+            } else {
+                content.classList.add('active');
+                content.classList.add('pb-6');
+                icon.classList.add('rotate-180', 'text-[#8D6E63]');
+            }
+        };
+
+        // 5. Books Rendering & Filtering
+        function renderBooks(filter = 'All') {
+            const bookGrid = document.getElementById('book-grid');
+            bookGrid.innerHTML = '';
+
+            let filtered = books;
+            if (filter !== 'All') {
+                if (filter === '과학') {
+                    filtered = books.filter(b => b.genre.includes('과학/SF') || b.genre.includes('소설/미스터리'));
+                } else {
+                    filtered = books.filter(b => b.genre.includes(filter));
+                }
+            }
+
+            if (filtered.length === 0) {
+                bookGrid.innerHTML = `<p class="col-span-full text-center text-gray-400 py-12 text-sm">해당 장르의 도서가 없습니다.</p>`;
+                return;
+            }
+
+            filtered.forEach((book) => {
+                // 원본 books 배열에서의 인덱스를 찾아 모달 연결
+                const originalIndex = books.findIndex(b => b.title === book.title);
+
+                bookGrid.innerHTML += `
+                    <div onclick="openModal(${originalIndex})" class="group flex flex-col items-center cursor-pointer">
+                        <div class="relative w-36 h-48 md:w-48 md:h-64 overflow-hidden rounded-md shadow-md transition-all duration-500 group-hover:-translate-y-3 group-hover:shadow-2xl bg-white">
+                            <img src="${book.image}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="${book.title}" onerror="this.src='https://via.placeholder.com/200x300?text=No+Cover'">
+                            <div class="absolute inset-y-0 left-0 w-1 bg-gradient-to-r from-black/20 to-transparent"></div>
+                            <!-- 덮개 효과 -->
+                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
+                        </div>
+                        
+                        <div class="mt-5 text-center px-2">
+                            <span class="text-[9px] text-[#8D6E63] px-2 py-0.5 border border-[#8D6E63]/30 rounded-full mb-2 inline-block">${book.genre}</span>
+                            <h3 class="text-[#3E2723] font-serif text-base md:text-lg font-bold group-hover:text-[#8D6E63] transition-colors leading-tight line-clamp-1">${book.title}</h3>
+                            <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1.5">${book.author}</p>
+                        </div>
+                    </div>
+                `;
+            });
         }
 
-        // 책 그리드 렌더링
-        const bookGrid = document.getElementById('book-grid');
-        books.forEach((book, index) => {
-            bookGrid.innerHTML += `
-                <div onclick="openModal(${index})" class="group flex flex-col items-center cursor-pointer">
-                    <div class="relative w-32 h-44 md:w-44 md:h-60 overflow-hidden rounded-md shadow-lg transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-2xl bg-white">
-                        <img src="${book.image}" class="w-full h-full object-cover" alt="${book.title}">
-                        
-                        <div class="absolute inset-y-0 left-0 w-1.5 bg-black/10"></div>
-                    </div>
-                    
-                    <div class="mt-6 text-center">
-                        <h3 class="text-[#3E2723] font-serif text-lg font-bold group-hover:text-[#8D6E63] transition-colors">${book.title}</h3>
-                        <p class="text-[11px] text-[#8D6E63] uppercase tracking-wider mt-1">${book.author}</p>
-                    </div>
-                </div>
-            `;
+        // Filter 버튼 이벤트
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active', 'bg-[#8D6E63]', 'text-white'));
+                e.target.classList.add('active');
+                renderBooks(e.target.dataset.filter);
+            });
         });
 
+        // 6. Modal Functions
         const modal = document.getElementById('book-modal');
-        
-        function openModal(index) {
+        const modalContent = document.getElementById('book-modal-content');
+
+        window.openModal = function (index) {
             const book = books[index];
-            document.getElementById('modal-img').src = book.image;
+            const img = document.getElementById('modal-img');
+            img.src = book.image;
+            img.onerror = function () { this.src = 'https://via.placeholder.com/400x600?text=No+Cover'; };
+
+            document.getElementById('modal-genre').innerText = book.genre;
             document.getElementById('modal-title').innerText = book.title;
             document.getElementById('modal-author').innerText = book.author;
-            document.getElementById('modal-summary').innerText = book.summary;
+            document.getElementById('modal-author-info').innerText = book.authorInfo || "";
+            document.getElementById('modal-full-summary').innerText = book.fullSummary || book.summary;
             document.getElementById('modal-topic').innerText = book.topic;
-            
-            // 자료 링크 설정
+
+            const questionsContainer = document.getElementById('modal-questions');
+            if (book.questions && book.questions.length > 0) {
+                questionsContainer.innerHTML = book.questions.map(q => `<li class="flex items-start"><span class="text-[#8D6E63] mr-2 font-serif text-lg leading-none mt-0.5">•</span><span>${q}</span></li>`).join('');
+            } else {
+                questionsContainer.innerHTML = '<li class="text-gray-400 italic">등록된 질문이 없습니다.</li>';
+            }
+
             const materialLink = document.getElementById('modal-material-link');
             const materialContainer = document.getElementById('modal-material-container');
-            
-            if (book.materialUrl && book.materialUrl !== "#") {
+            const noMaterial = document.getElementById('modal-no-material');
+
+            if (book.materialUrl && book.materialUrl.trim() !== "" && book.materialUrl !== "#") {
                 materialLink.href = book.materialUrl;
                 materialContainer.style.display = 'block';
+                noMaterial.style.display = 'none';
             } else {
                 materialContainer.style.display = 'none';
+                noMaterial.style.display = 'block';
             }
-            
+
+            switchModalTab('info');
+
+            modal.classList.remove('hidden');
             modal.classList.add('modal-active');
+            setTimeout(() => { modalContent.classList.remove('scale-95'); modalContent.classList.add('scale-100'); }, 10);
             document.body.style.overflow = 'hidden';
-        }
+        };
 
-        function closeModal() {
-            modal.classList.remove('modal-active');
-            document.body.style.overflow = 'auto';
-        }
+        window.switchModalTab = function (tab) {
+            const infoTab = document.getElementById('tab-info');
+            const recordsTab = document.getElementById('tab-records');
+            const infoBtn = document.getElementById('tab-info-btn');
+            const recordsBtn = document.getElementById('tab-records-btn');
 
-        window.onclick = function(event) {
+            if (tab === 'info') {
+                infoTab.classList.remove('hidden');
+                recordsTab.classList.add('hidden');
+                infoBtn.className = "pb-2 text-sm font-bold text-[#8D6E63] border-b-2 border-[#8D6E63] transition-colors";
+                recordsBtn.className = "pb-2 text-sm font-bold text-gray-400 border-b-2 border-transparent hover:text-gray-600 transition-colors";
+            } else {
+                infoTab.classList.add('hidden');
+                recordsTab.classList.remove('hidden');
+                recordsBtn.className = "pb-2 text-sm font-bold text-[#8D6E63] border-b-2 border-[#8D6E63] transition-colors";
+                infoBtn.className = "pb-2 text-sm font-bold text-gray-400 border-b-2 border-transparent hover:text-gray-600 transition-colors";
+            }
+        };
+
+        window.closeModal = function () {
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('modal-active');
+                document.body.style.overflow = 'auto';
+            }, 200);
+        };
+
+        window.onclick = function (event) {
             if (event.target == modal) closeModal();
-        }
+        };
 
-        // 모바일 메뉴 토글 로직
+        // 7. Lightbox
+        window.openLightbox = function (src) {
+            const lightbox = document.getElementById('lightbox-modal');
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightboxImg.src = src;
+            lightbox.classList.remove('hidden');
+            lightbox.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.closeLightbox = function () {
+            const lightbox = document.getElementById('lightbox-modal');
+            lightbox.classList.add('hidden');
+            lightbox.classList.remove('flex');
+            if (document.getElementById('book-modal').classList.contains('hidden')) {
+                document.body.style.overflow = 'auto';
+            }
+        };
+
+        // 8. Mobile Menu
         const menuToggle = document.getElementById('menu-toggle');
         const navLinks = document.getElementById('nav-links');
         const menuIcon = document.getElementById('menu-icon');
 
         menuToggle.addEventListener('click', () => {
-            const isHidden = navLinks.classList.contains('hidden');
-            if (isHidden) {
+            if (navLinks.classList.contains('hidden')) {
                 navLinks.classList.remove('hidden');
-                // 아이콘을 'X' 모양으로 변경 (선택사항)
                 menuIcon.setAttribute('d', 'M6 18L18 6M6 6l12 12');
             } else {
                 navLinks.classList.add('hidden');
-                // 아이콘을 다시 '≡' 모양으로 변경
                 menuIcon.setAttribute('d', 'M4 6h16M4 12h16m-7 6h7');
             }
         });
 
-        // 메뉴 항목 클릭 시 자동으로 메뉴 닫기 (모바일 한정)
-        const links = navLinks.querySelectorAll('a');
-        links.forEach(link => {
+        navLinks.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
                 if (window.innerWidth < 768) {
                     navLinks.classList.add('hidden');
@@ -654,43 +1027,18 @@
             });
         });
 
-        function openLightbox(src) {
-            const lightbox = document.getElementById('lightbox-modal');
-            const lightboxImg = document.getElementById('lightbox-img');
-            
-            lightboxImg.src = src;
-            lightbox.classList.remove('hidden');
-            lightbox.classList.add('flex');
-            document.body.style.overflow = 'hidden'; // 스크롤 방지
-        }
-
-        // 라이트박스 닫기
-        function closeLightbox() {
-            const lightbox = document.getElementById('lightbox-modal');
-            lightbox.classList.add('hidden');
-            lightbox.classList.remove('flex');
-            
-            // 책 상세 모달이 열려있지 않은 경우에만 스크롤 복구
-            if (document.getElementById('book-modal').classList.contains('hidden')) {
-                document.body.style.overflow = 'auto';
-            }
-        }
-
+        // 9. Dashboard Logic
         function renderDashboard() {
             const today = new Date();
-
-            // 오늘 날짜와 같거나 과거인 일정만 필터링 (완료된 모임)
             const completedMeetings = schedules.filter(item => {
+                if (item.date === "미정") return false;
                 const eventDate = new Date(item.date.replace(/\. /g, '-').replace(/\./g, '-'));
                 return eventDate <= today;
             });
 
-            // 필터링된 결과의 개수를 통계에 반영
-            document.getElementById('stat-total-meetings').innerText = `${completedMeetings.length}회`;
-            // 1. 기본 수치 업데이트
-            document.getElementById('stat-total-books').innerText = `${books.length}권`;
+            document.getElementById('stat-total-meetings').innerHTML = `${completedMeetings.length}<span class="text-lg ml-1">회</span>`;
+            document.getElementById('stat-total-books').innerHTML = `${books.length}<span class="text-lg ml-1">권</span>`;
 
-            // 2. 장르 분포 계산
             const genreCounts = {};
             books.forEach(book => {
                 const g = book.genre || "기타";
@@ -698,33 +1046,75 @@
             });
 
             const genreContainer = document.getElementById('genre-container');
-            genreContainer.innerHTML = ''; // 초기화
+            genreContainer.innerHTML = '';
 
-            // 장르별 비중 계산 및 HTML 생성
-            Object.keys(genreCounts).forEach(genre => {
+            Object.keys(genreCounts).sort((a, b) => genreCounts[b] - genreCounts[a]).forEach(genre => {
                 const count = genreCounts[genre];
                 const percentage = Math.round((count / books.length) * 100);
-                
+
                 genreContainer.innerHTML += `
                     <div>
-                        <div class="flex justify-between text-xs mb-1">
-                            <span>${genre}</span>
+                        <div class="flex justify-between text-[11px] font-bold text-gray-600 mb-2 uppercase tracking-wider">
+                            <span>${genre} <span class="text-gray-400 font-normal ml-1">(${count}권)</span></span>
                             <span>${percentage}%</span>
                         </div>
-                        <div class="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
-                            <div class="bg-[#8D6E63] h-full transition-all duration-1000" style="width: ${percentage}%"></div>
+                        <div class="w-full bg-gray-200/60 h-2 rounded-full overflow-hidden">
+                            <div class="bg-[#8D6E63] h-full transition-all duration-1500 ease-out" style="width: 0%" data-width="${percentage}%"></div>
                         </div>
                     </div>
                 `;
             });
+
+            // Trigger animation for progress bars
+            setTimeout(() => {
+                document.querySelectorAll('#genre-container .bg-\\[\\#8D6E63\\]').forEach(bar => {
+                    bar.style.width = bar.getAttribute('data-width');
+                });
+            }, 500);
         }
 
-        // 페이지 로드 시 실행
-        window.onload = function() {
+        // 10. Drag to Scroll for Quotes
+        function initDragToScroll() {
+            const slider = document.getElementById('quote-container');
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+
+            slider.style.cursor = 'grab';
+
+            slider.addEventListener('mousedown', (e) => {
+                isDown = true;
+                slider.style.cursor = 'grabbing';
+                startX = e.pageX - slider.offsetLeft;
+                scrollLeft = slider.scrollLeft;
+            });
+            slider.addEventListener('mouseleave', () => {
+                isDown = false;
+                slider.style.cursor = 'grab';
+            });
+            slider.addEventListener('mouseup', () => {
+                isDown = false;
+                slider.style.cursor = 'grab';
+            });
+            slider.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - slider.offsetLeft;
+                const walk = (x - startX) * 1.5;
+                slider.scrollLeft = scrollLeft - walk;
+            });
+        }
+
+        // Initialize
+        window.onload = function () {
+            initScrollAnimations();
+            renderQuotes();
+            initDragToScroll();
+            renderAccordionSchedules();
+            renderBooks('All');
             renderDashboard();
-            renderAccordionSchedules()
-            // 기존의 renderBooks(), renderSchedules() 등도 여기서 호출
         };
     </script>
 </body>
+
 </html>
