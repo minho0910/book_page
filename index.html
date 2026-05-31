@@ -6,36 +6,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>여백의 시간 | 독서 토론 모임</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap"
-        rel="stylesheet">
     <style>
+        /* 1. 완전히 새로운 분위기의 폰트 불러오기 (SUIT & KoPubWorldBatang) */
+        @import url('https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/woff2/SUIT-Variable.css');
+
+        @font-face {
+            font-family: 'KoPubWorldBatang';
+            src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/KoPubWorldBatang.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         /* 기본 스타일 */
         html {
             scroll-behavior: smooth;
         }
 
         body {
-            font-family: 'Noto Sans KR', sans-serif;
+            /* 본문은 현대적인 SUIT 유지 (!important 추가) */
+            font-family: 'SUIT Variable', 'SUIT', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif !important;
             background-color: #F4F1EA;
             transition: overflow 0.3s;
             padding-top: 64px;
         }
 
         .font-serif {
-            font-family: 'Noto Serif KR', serif;
+            /* 제목과 주요 문구에 출판용 명조체 최우선 적용 (!important 추가) */
+            font-family: 'KoPubWorldBatang', serif !important;
         }
 
+        /* --- 이하 기존 스타일 동일 유지 --- */
         .hero-overlay {
             background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6));
         }
 
-        /* 메뉴 클릭 보정 */
         .scroll-mt-24 {
             scroll-margin-top: 6rem;
         }
 
-        /* 스크롤 애니메이션 (Scroll Reveal) */
         .reveal {
             opacity: 0;
             transform: translateY(40px);
@@ -59,7 +67,6 @@
             transition-delay: 300ms;
         }
 
-        /* 아코디언 및 타임라인 */
         .accordion-content {
             max-height: 0;
             overflow: hidden;
@@ -95,7 +102,6 @@
             background-color: rgba(141, 110, 99, 0.2);
         }
 
-        /* 필터 버튼 */
         .filter-btn {
             transition: all 0.3s ease;
         }
@@ -106,7 +112,6 @@
             border-color: #8D6E63;
         }
 
-        /* 모달 및 라이트박스 */
         .modal-active {
             display: flex !important;
             animation: fadeIn 0.3s ease-out forwards;
@@ -124,7 +129,6 @@
             }
         }
 
-        /* 가로 스크롤 숨김 */
         .hide-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -134,7 +138,6 @@
             scrollbar-width: none;
         }
 
-        /* 내비게이션 바 블러 */
         .nav-scrolled {
             background-color: rgba(244, 241, 234, 0.9) !important;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
@@ -178,12 +181,13 @@
             class="absolute inset-0 w-full h-full object-cover transform scale-105 transition-transform duration-[20s] hover:scale-110"
             alt="Cozy reading space">
         <div class="absolute inset-0 hero-overlay"></div>
+        
         <div class="relative z-10 text-center px-4 reveal">
             <h1 class="text-4xl md:text-7xl font-serif mb-6 tracking-widest uppercase drop-shadow-lg">The Margin</h1>
             <div class="h-px w-24 bg-white/50 mx-auto my-8"></div>
             <p class="text-lg md:text-2xl font-light opacity-90 leading-relaxed drop-shadow-md">
                 바쁜 일상 속, 잠시 멈추어 서는 시간<br>
-                책과 사람 그리고 이야기가 머무는 곳 <span class="font-serif font-bold italic">'여백의 시간'</span>입니다.
+                책과 사람 그리고 이야기가 머무는 곳 <span class="font-serif font-bold italic text-[#D7CCC8]">'여백의 시간'</span> 입니다.
             </p>
         </div>
     </header>
@@ -252,10 +256,18 @@
             <p class="text-white/50 text-[11px] mt-4 tracking-widest uppercase">우리가 밑줄 친 문장들</p>
         </div>
 
-        <div class="flex overflow-x-auto gap-6 pb-8 px-6 md:px-12 hide-scrollbar reveal delay-100" id="quote-container">
-            <!-- Quotes dynamically injected here -->
+        <div class="flex overflow-x-auto gap-6 pb-4 px-6 md:px-12 hide-scrollbar reveal delay-100" id="quote-container">
+        </div>
+
+        <div class="max-w-md md:max-w-2xl mx-auto mt-6 px-6 reveal delay-100">
+            <div class="w-full h-2 bg-[#F4F1EA]/5 rounded-full relative overflow-hidden">
+                <div id="custom-scrollbar-thumb"
+                    class="absolute top-0 left-0 h-full bg-[#F4F1EA]/20 hover:bg-[#F4F1EA]/40 rounded-full transition-colors duration-300">
+                </div>
+            </div>
         </div>
     </section>
+
 
     <!-- Schedule Section -->
     <section id="schedule" class="py-24 bg-[#F4F1EA] scroll-mt-24">
@@ -382,13 +394,14 @@
     <section id="gallery" class="py-24 bg-white scroll-mt-24 overflow-hidden">
         <div class="max-w-6xl mx-auto px-6">
             <div class="text-center mb-16 reveal">
-                <h2 class="text-[#5D4037] text-2xl font-serif italic tracking-widest border-b border-[#5D4037]/30 inline-block pb-2 uppercase">
+                <h2
+                    class="text-[#5D4037] text-2xl font-serif italic tracking-widest border-b border-[#5D4037]/30 inline-block pb-2 uppercase">
                     Our Memories</h2>
                 <p class="text-gray-400 text-[11px] mt-4 tracking-widest uppercase">책갈피처럼 남겨진 순간들</p>
             </div>
 
             <div id="gallery-container" class="flex flex-wrap justify-center gap-6 md:gap-10 p-8 reveal delay-100">
-                </div>
+            </div>
         </div>
     </section>
 
@@ -454,23 +467,30 @@
                             <!-- Questions rendered here -->
                         </ul>
                     </div>
-    
+
                     <div id="modal-material-container">
-                        <h4 class="text-[11px] font-bold text-gray-400 mb-3 uppercase tracking-widest">Discussion Material & Summary</h4>
-                        
+                        <h4 class="text-[11px] font-bold text-gray-400 mb-3 uppercase tracking-widest">Discussion
+                            Material & Summary</h4>
+
                         <div class="flex gap-3 w-full">
                             <a id="modal-material-link" href="#" target="_blank"
                                 class="flex-1 flex items-center justify-center py-4 px-2 bg-white border border-[#8D6E63]/30 text-[#5D4037] rounded-lg text-xs md:text-sm font-bold hover:bg-[#8D6E63] hover:text-white transition-all shadow-sm hover:shadow-md group text-center">
-                                <svg class="w-4 h-4 md:w-5 md:h-5 mr-1 md:mr-2 text-[#8D6E63] group-hover:text-white transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                <svg class="w-4 h-4 md:w-5 md:h-5 mr-1 md:mr-2 text-[#8D6E63] group-hover:text-white transition-colors flex-shrink-0"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                    </path>
                                 </svg>
-                                발제문 
+                                발제문
                             </a>
-                            
+
                             <a id="modal-summary-link" href="#" target="_blank"
                                 class="flex-1 flex items-center justify-center py-4 px-2 bg-white border border-[#8D6E63]/30 text-[#5D4037] rounded-lg text-xs md:text-sm font-bold hover:bg-[#8D6E63] hover:text-white transition-all shadow-sm hover:shadow-md group text-center">
-                                <svg class="w-4 h-4 md:w-5 md:h-5 mr-1 md:mr-2 text-[#8D6E63] group-hover:text-white transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                <svg class="w-4 h-4 md:w-5 md:h-5 mr-1 md:mr-2 text-[#8D6E63] group-hover:text-white transition-colors flex-shrink-0"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                    </path>
                                 </svg>
                                 요약본
                             </a>
@@ -938,10 +958,10 @@
                 questionsContainer.innerHTML = '<li class="text-gray-400 italic">등록된 질문이 없습니다.</li>';
             }
 
-            
+
             // 버튼과 컨테이너 요소를 가져옵니다 
             const materialLink = document.getElementById('modal-material-link');
-            const summaryLink = document.getElementById('modal-summary-link'); 
+            const summaryLink = document.getElementById('modal-summary-link');
             const materialContainer = document.getElementById('modal-material-container');
             const noMaterial = document.getElementById('modal-no-material');
 
@@ -1015,7 +1035,7 @@
         window.onclick = function (event) {
             if (event.target == modal) closeModal();
         };
-        
+
         const galleryPhotos = [
             { src: "our_moments/26.05.31.jpg", title: "2026.05.31" },
             { src: "our_moments/26.04.25.jpg", title: "2026.04.25" },
@@ -1031,13 +1051,13 @@
         // 2. 갤러리 렌더링 함수
         function renderGallery() {
             const container = document.getElementById('gallery-container');
-            
+
             // 사진이 기울어지는 각도를 무작위처럼 보이게 하는 패턴 배열
             const rotations = ['-rotate-3', 'rotate-2', '-rotate-6', 'rotate-4', '-rotate-2', 'rotate-6'];
 
             container.innerHTML = galleryPhotos.map((photo, index) => {
                 const rot = rotations[index % rotations.length]; // 각도 패턴 순환 적용
-                
+
                 return `
                     <div class="relative w-40 md:w-56 bg-white p-3 pb-12 shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-4 hover:scale-110 group ${rot} cursor-zoom-in hover:z-10" onclick="openLightbox('${photo.src}')">
                         
@@ -1177,6 +1197,110 @@
                 slider.scrollLeft = scrollLeft - walk;
             });
         }
+        // 11. Custom Scrollbar for Quotes (중앙 집중형 스크롤바, 드래그 및 클릭 이동 기능 추가)
+        function initCustomScrollbar() {
+            const container = document.getElementById('quote-container');
+            const thumb = document.getElementById('custom-scrollbar-thumb');
+
+            if (!container || !thumb) return;
+
+            const track = thumb.parentElement;
+
+            // 마우스 커서 스타일(UX) 추가
+            track.style.cursor = 'pointer';
+            thumb.style.cursor = 'grab';
+
+            // --- [1] 위치 동기화 로직 (카드가 움직일 때 막대 이동) ---
+            const updateScrollbar = () => {
+                const scrollLeft = container.scrollLeft;
+                const maxScrollLeft = container.scrollWidth - container.clientWidth;
+
+                if (maxScrollLeft <= 0) {
+                    thumb.style.display = 'none';
+                    return;
+                }
+
+                thumb.style.display = 'block';
+
+                const thumbWidthPercent = Math.max((container.clientWidth / container.scrollWidth) * 100, 15);
+                thumb.style.width = `${thumbWidthPercent}%`;
+
+                const scrollRatio = scrollLeft / maxScrollLeft;
+                const maxThumbMove = 100 - thumbWidthPercent;
+                const thumbLeft = scrollRatio * maxThumbMove;
+
+                thumb.style.left = `${thumbLeft}%`;
+            };
+
+            container.addEventListener('scroll', updateScrollbar);
+            window.addEventListener('resize', updateScrollbar);
+            setTimeout(updateScrollbar, 100);
+
+            // --- [2] 마우스 드래그 로직 (막대를 잡고 움직일 때 카드 이동) ---
+            let isDragging = false;
+            let startX;
+            let startScrollLeft;
+
+            thumb.addEventListener('mousedown', (e) => {
+                e.preventDefault(); // 기본 드래그 방지
+                isDragging = true;
+                thumb.style.cursor = 'grabbing';
+
+                // 클릭한 순간의 마우스 X좌표와 컨테이너 스크롤 위치 저장
+                startX = e.clientX;
+                startScrollLeft = container.scrollLeft;
+
+                // 드래그 중 화면 텍스트 선택 방지
+                document.body.style.userSelect = 'none';
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (!isDragging) return;
+                isDragging = false;
+                thumb.style.cursor = 'grab';
+                document.body.style.userSelect = 'auto';
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+
+                // 움직일 수 있는 최대 범위 계산
+                const maxScrollLeft = container.scrollWidth - container.clientWidth;
+                const maxThumbLeft = track.clientWidth - thumb.clientWidth;
+
+                // 마우스가 이동한 픽셀 거리 계산
+                const walkX = e.clientX - startX;
+
+                // 막대 이동 비율을 컨테이너 스크롤 수치로 변환
+                const scrollWalk = (walkX / maxThumbLeft) * maxScrollLeft;
+
+                // 컨테이너 스크롤 이동 (updateScrollbar가 자동으로 막대 위치도 업데이트함)
+                container.scrollLeft = startScrollLeft + scrollWalk;
+            });
+
+            // --- [3] 클릭 이동 로직 (빈 트랙을 클릭하면 해당 위치로 카드 이동) ---
+            track.addEventListener('click', (e) => {
+                if (e.target === thumb) return; // 막대 자체를 클릭한 것은 무시
+
+                const trackRect = track.getBoundingClientRect();
+                const clickX = e.clientX - trackRect.left;
+
+                // 클릭한 위치의 중앙으로 막대가 오도록 비율 계산
+                let clickRatio = (clickX - thumb.clientWidth / 2) / (track.clientWidth - thumb.clientWidth);
+
+                // 비율이 0~1 범위를 벗어나지 않도록 보정
+                clickRatio = Math.max(0, Math.min(1, clickRatio));
+
+                const maxScrollLeft = container.scrollWidth - container.clientWidth;
+
+                // 부드럽게 스크롤 이동
+                container.scrollTo({
+                    left: clickRatio * maxScrollLeft,
+                    behavior: 'smooth'
+                });
+            });
+        }
 
         // Initialize
         window.onload = function () {
@@ -1187,6 +1311,7 @@
             renderBooks('All');
             renderDashboard();
             renderGallery();
+            initCustomScrollbar();
         };
     </script>
 </body>
