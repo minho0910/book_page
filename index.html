@@ -379,55 +379,18 @@
     </section>
 
     <!-- Gallery Section -->
-    <section id="gallery" class="py-24 bg-white scroll-mt-24">
-        <div class="max-w-5xl mx-auto px-6">
+    <section id="gallery" class="py-24 bg-white scroll-mt-24 overflow-hidden">
+        <div class="max-w-6xl mx-auto px-6">
             <div class="text-center mb-16 reveal">
-                <h2
-                    class="text-[#5D4037] text-2xl font-serif italic tracking-widest border-b border-[#5D4037]/30 inline-block pb-2 uppercase">
-                    Our Moments</h2>
-                <p class="text-gray-400 text-[11px] mt-4 tracking-widest uppercase">여백을 채워가는 우리의 시간들</p>
+                <h2 class="text-[#5D4037] text-2xl font-serif italic tracking-widest border-b border-[#5D4037]/30 inline-block pb-2 uppercase">
+                    Our Memories</h2>
+                <p class="text-gray-400 text-[11px] mt-4 tracking-widest uppercase">책갈피처럼 남겨진 순간들</p>
             </div>
 
-            <div class="space-y-12">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 reveal delay-100">
-                    <div class="md:col-span-2 md:row-span-2 overflow-hidden rounded-lg shadow-sm transition-transform duration-500 hover:scale-[1.02] hover:shadow-lg cursor-zoom-in"
-                        onclick="openLightbox(this.querySelector('img').src)">
-                        <img src="our_moments/KakaoTalk_20250401_100146628_03.jpg"
-                            class="w-full h-full object-cover aspect-video" alt="Meeting photo">
-                    </div>
-                    <div class="overflow-hidden rounded-lg shadow-sm transition-transform duration-500 hover:scale-[1.03] hover:shadow-lg cursor-zoom-in"
-                        onclick="openLightbox(this.querySelector('img').src)">
-                        <img src="our_moments/KakaoTalk_20250427_194914927_02.jpg"
-                            class="w-full h-full object-cover aspect-square" alt="Meeting photo">
-                    </div>
-                    <div class="overflow-hidden rounded-lg shadow-sm transition-transform duration-500 hover:scale-[1.03] hover:shadow-lg cursor-zoom-in"
-                        onclick="openLightbox(this.querySelector('img').src)">
-                        <img src="our_moments/KakaoTalk_20250602_223442409.jpg"
-                            class="w-full h-full object-cover aspect-square" alt="Meeting photo">
-                    </div>
+            <div id="gallery-container" class="flex flex-wrap justify-center gap-6 md:gap-10 p-8 reveal delay-100">
                 </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 reveal delay-200">
-                    <div class="overflow-hidden rounded-lg shadow-sm transition-transform duration-500 hover:scale-[1.03] hover:shadow-lg cursor-zoom-in"
-                        onclick="openLightbox(this.querySelector('img').src)">
-                        <img src="our_moments/KakaoTalk_20250727_171311368_01.jpg"
-                            class="w-full h-full object-cover aspect-square" alt="Meeting photo">
-                    </div>
-                    <div class="md:col-span-2 md:row-span-2 overflow-hidden rounded-lg shadow-sm transition-transform duration-500 hover:scale-[1.02] hover:shadow-lg cursor-zoom-in"
-                        onclick="openLightbox(this.querySelector('img').src)">
-                        <img src="our_moments/KakaoTalk_20250602_223447235.jpg"
-                            class="w-full h-full object-cover aspect-video" alt="Meeting photo">
-                    </div>
-                    <div class="overflow-hidden rounded-lg shadow-sm transition-transform duration-500 hover:scale-[1.03] hover:shadow-lg cursor-zoom-in"
-                        onclick="openLightbox(this.querySelector('img').src)">
-                        <img src="our_moments/KakaoTalk_20251130_000330013_01.jpg"
-                            class="w-full h-full object-cover aspect-square" alt="Meeting photo">
-                    </div>
-                </div>
-            </div>
         </div>
     </section>
-
 
     <!-- Modals -->
     <div id="book-modal"
@@ -491,24 +454,31 @@
                             <!-- Questions rendered here -->
                         </ul>
                     </div>
-
+    
                     <div id="modal-material-container">
-                        <h4 class="text-[11px] font-bold text-gray-400 mb-3 uppercase tracking-widest">Discussion
-                            Material</h4>
-                        <a id="modal-material-link" href="#" target="_blank"
-                            class="flex items-center justify-center w-full py-4 px-4 bg-white border border-[#8D6E63]/30 text-[#5D4037] rounded-lg text-sm font-bold hover:bg-[#8D6E63] hover:text-white transition-all shadow-sm hover:shadow-md group">
-                            <svg class="w-5 h-5 mr-2 text-[#8D6E63] group-hover:text-white transition-colors"
-                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                                </path>
-                            </svg>
-                            발제문 및 토론 자료 원본 열람하기
-                        </a>
+                        <h4 class="text-[11px] font-bold text-gray-400 mb-3 uppercase tracking-widest">Discussion Material & Summary</h4>
+                        
+                        <div class="flex gap-3 w-full">
+                            <a id="modal-material-link" href="#" target="_blank"
+                                class="flex-1 flex items-center justify-center py-4 px-2 bg-white border border-[#8D6E63]/30 text-[#5D4037] rounded-lg text-xs md:text-sm font-bold hover:bg-[#8D6E63] hover:text-white transition-all shadow-sm hover:shadow-md group text-center">
+                                <svg class="w-4 h-4 md:w-5 md:h-5 mr-1 md:mr-2 text-[#8D6E63] group-hover:text-white transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                발제문 
+                            </a>
+                            
+                            <a id="modal-summary-link" href="#" target="_blank"
+                                class="flex-1 flex items-center justify-center py-4 px-2 bg-white border border-[#8D6E63]/30 text-[#5D4037] rounded-lg text-xs md:text-sm font-bold hover:bg-[#8D6E63] hover:text-white transition-all shadow-sm hover:shadow-md group text-center">
+                                <svg class="w-4 h-4 md:w-5 md:h-5 mr-1 md:mr-2 text-[#8D6E63] group-hover:text-white transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                요약본
+                            </a>
+                        </div>
                     </div>
 
                     <div id="modal-no-material" class="hidden text-center py-8">
-                        <p class="text-sm text-gray-400 italic">등록된 토론 자료 원본이 없습니다.</p>
+                        <p class="text-sm text-gray-400 italic">등록된 자료가 없습니다.</p>
                     </div>
                 </div>
 
@@ -542,11 +512,12 @@
     <script>
         // Data Configuration
         const schedules = [
-            { date: "2026. 05. 31", status: "Upcoming", title: "5월 정기 모임", book: "돈 없이 살 수 없는 것들", location: "공간너섬 용산역점", time: "15:00 - 18:00" },
-            { date: "2026. 04. 25", status: "past", title: "4월 정기 모임", book: "인어가 잠든 집", location: "워크토크 잠실점", time: "15:00 - 18:00" },
-            { date: "2026. 03. 28", status: "past", title: "3월 정기 모임", book: "천 개의 파랑", location: "공간너섬 용산역점", time: "14:00 - 17:00" },
+            { date: "2026. 06. 27", status: "Upcoming", title: "06월 정기 모임", book: "앨저넌에게 꽃을", location: "미정", time: "15:00 - 18:00" },
+            { date: "2026. 05. 31", status: "Past", title: "05월 정기 모임", book: "돈 없이 살 수 없는 것들", location: "공간너섬 용산역점", time: "15:00 - 18:00" },
+            { date: "2026. 04. 25", status: "past", title: "04월 정기 모임", book: "인어가 잠든 집", location: "워크토크 잠실점", time: "15:00 - 18:00" },
+            { date: "2026. 03. 28", status: "past", title: "03월 정기 모임", book: "천 개의 파랑", location: "공간너섬 용산역점", time: "14:00 - 17:00" },
             { date: "2026. 02. 07", status: "Past", title: "2026년 OT", book: "새 멤버 소개 및 앞으로의 활동 계획", location: "공간너섬 용산역점", time: "17:00 - 21:00" },
-            { date: "2026. 01. 03", status: "Past", title: "1월 정기 모임", book: "죄와 벌", location: "리얼컨퍼런스 용산점", time: "14:30 - 18:00" },
+            { date: "2026. 01. 03", status: "Past", title: "01월 정기 모임", book: "죄와 벌", location: "리얼컨퍼런스 용산점", time: "14:30 - 18:00" },
             { date: "2025. 11. 29", status: "Past", title: "11월 정기 모임", book: "물고기는 존재하지 않는다", location: "리얼컨퍼런스 용산점", time: "14:00 - 17:00" },
             { date: "2025. 10. 25", status: "Past", title: "10월 정기 모임", book: "그대를 사랑합니다", location: "회의실D 마포점", time: "14:00 - 17:00" },
             { date: "2025. 07. 26", status: "Past", title: "07월 정기 모임", book: "그리스인 조르바", location: "회의실D 공덕점", time: "15:00 - 18:00" },
@@ -722,7 +693,9 @@
                     "2. 효율성과 속도만을 강조하는 사회에서 '천천히 달리는 연습'이 의미하는 바는?",
                     "3. 다름과 결핍을 가진 존재들이 연대함으로써 만들어내는 힘은 어느 정도일까요?"
                 ],
-                materialUrl: "https://drive.google.com/file/d/1MgEJXjFB9X_xvJuHNCCCWQo91SoJy3jO/view?usp=drive_link"
+                materialUrl: "https://drive.google.com/file/d/1MgEJXjFB9X_xvJuHNCCCWQo91SoJy3jO/view?usp=drive_link",
+                summaryUrl: "discussion materials/천 개의 파랑_요약본.pdf"
+
             },
             {
                 title: "인어가 잠든 집",
@@ -738,7 +711,39 @@
                     "3. 타인의 슬픔에 대해 우리가 어디까지 간섭하고 판단할 수 있을까요?"
                 ],
                 materialUrl: "discussion materials/인어가잠든집_발제문.pdf"
+            },
+            {
+                title: "돈으로 살 수 없는 것들",
+                author: "마이클 샌델",
+                authorInfo: "하버드 대학교 정치학과 교수이자 세계적인 공동체주의 철학자. 저서 《정의란 무엇인가》와 《돈으로 살 수 없는 것들》을 통해 현대 사회의 윤리적 딜레마와 시장 만능주의의 한계를 날카롭게 파헤쳤습니다.",
+                genre: "사회/경제",
+                image: "images_book/돈으로살수없는것들.jpg",
+                fullSummary: "시장 지배력이 전통적인 비시장 영역으로 확대됨에 따라 발생하는 도덕적, 철학적 문제를 다룹니다. 교육, 건강, 환경, 시민정신 등 삶의 모든 가치에 가격표가 붙는 현실 속에서, 시장의 한계와 공동체적 정의를 어떻게 복원할 것인지 질문합니다.",
+                topic: "모든 것에 가격표가 붙는 시장 만능주의 시대에 우리가 지켜내야 할 도덕적 가치는 무엇인가?",
+                questions: [
+                    "1. 돈으로 살 수 없는 것(또는 사서는 안 되는 것)이 있다면 무엇이며, 왜 그렇게 생각하시나요?",
+                    "2. 줄서기 대행 서비스나 광고판이 된 이마와 같이 일상의 시장화에 대해 어떻게 평가하시나요?",
+                    "3. 시장 경제와 시장 사회의 경계를 구분 짓기 위해 공동체가 해야 할 합의는 무엇일까요?"
+                ],
+                materialUrl: "discussion materials/돈으로_살_수_없는_것들_발제문.pdf",
+                summaryUrl: "discussion materials/돈으로_살_수_없는_것들_요약본.pdf"
+            },
+            {
+                title: "앨저넌에게 꽃을",
+                author: "다니엘 키스",
+                authorInfo: "미국의 소설가이자 심리학자. 지적장애를 가진 주인공 찰리의 심리를 섬세한 일기 형식으로 묘사한 대표작 《앨저넌에게 꽃을》로 휴고상과 네뷸러상을 모두 수상하며 세계적인 작가 반열에 올랐습니다.",
+                genre: "과학/SF",
+                image: "images_book/앨저넌에게 꽃을.jpg",
+                fullSummary: "지능지수 68의 지적장애인 찰리 고든은 뇌 수술을 통해 지능을 향상시키는 획기적인 실험의 대상이 됩니다. 실험용 흰쥐 앨저넌과 같은 수술을 받은 찰리는 지능이 급격히 발달하여 천재가 되지만, 지능의 성장과 함께 인간 세상의 위선과 외로움을 깨닫게 됩니다. 그러나 얼마 지나지 않아 앨저넌에게서 부작용으로 인한 지능 퇴화가 관찰되고, 찰리 역시 자신에게 닥쳐올 비극적인 운명을 예감하게 됩니다.",
+                topic: "지능의 발달이 인간에게 주는 참된 행복과, 지성이 지니는 한계 및 사랑의 가치에 대하여",
+                questions: [
+                    "1. 찰리가 지능을 얻기 전과 천재가 된 후, 각각의 상태에서 느꼈던 행복과 불행은 어떻게 다른가요?",
+                    "2. 지능이 비약적으로 향상된 찰리를 대하는 주변 사람들의 태도 변화가 시사하는 사회적 수치심이나 편견은 무엇일까요?",
+                    "3. '지능이 사랑을 주고받는 능력을 대체할 수는 없다'는 작가의 메시지에 대해 어떻게 생각하시나요?"
+                ],
+                materialUrl: ""
             }
+
         ];
 
         const quotesData = [
@@ -753,7 +758,9 @@
             { text: "어떤 사람에게 민들레는 잡초처럼 보일지 모르지만, 다른 사람에게는 약초가 될 수 있다. 중요성은 우리가 부여하는 것이다.", book: "물고기는 존재하지 않는다" },
             { text: "인간에게는 적어도 단 한 군데쯤은, 자기를 불쌍히 여겨 줄 곳이, 아무 조건 없이 받아줄 곳이 있어야만 하는 법이니까요.", book: "죄와 벌" },
             { text: "천천히 달리는 연습을 할 거야. 다치지 않고 멀리 가기 위해서.", book: "천 개의 파랑" },
-            { text: "사랑하는 사람의 죽음을 인정하는 일, 그것은 남겨진 자가 해야 할 가장 잔인하고도 숭고한 의무일지도 모른다.", book: "인어가 잠든 집" }
+            { text: "사랑하는 사람의 죽음을 인정하는 일, 그것은 남겨진 자가 해야 할 가장 잔인하고도 숭고한 의무일지도 모른다.", book: "인어가 잠든 집" },
+            { text: "시장의 가치가 삶의 모든 영역을 지배하기 시작할 때, 우리는 더 이상 시민으로 살아가는 것이 아니라 단순히 소비자로 전락하게 됩니다.", book: "돈으로 살 수 없는 것들" },
+            { text: "지능은 인간이 가진 가장 위대한 선물 중 하나입니다. 하지만 사랑이 없는 지식은 아무런 가치도 없습니다.", book: "앨저넌에게 꽃을" }
         ];
 
         // 1. Scroll Animations
@@ -931,15 +938,39 @@
                 questionsContainer.innerHTML = '<li class="text-gray-400 italic">등록된 질문이 없습니다.</li>';
             }
 
+            
+            // 버튼과 컨테이너 요소를 가져옵니다 
             const materialLink = document.getElementById('modal-material-link');
+            const summaryLink = document.getElementById('modal-summary-link'); 
             const materialContainer = document.getElementById('modal-material-container');
             const noMaterial = document.getElementById('modal-no-material');
 
-            if (book.materialUrl && book.materialUrl.trim() !== "" && book.materialUrl !== "#") {
-                materialLink.href = book.materialUrl;
+            // 각각의 데이터가 유효한지 체크
+            const hasMaterial = book.materialUrl && book.materialUrl.trim() !== "" && book.materialUrl !== "#";
+            const hasSummary = book.summaryUrl && book.summaryUrl.trim() !== "" && book.summaryUrl !== "#";
+
+            // 둘 중 하나라도 자료가 있다면 컨테이너 표시
+            if (hasMaterial || hasSummary) {
                 materialContainer.style.display = 'block';
                 noMaterial.style.display = 'none';
+
+                // 발제문 자료 버튼 개별 제어
+                if (hasMaterial) {
+                    materialLink.style.display = 'flex';
+                    materialLink.href = book.materialUrl;
+                } else {
+                    materialLink.style.display = 'none';
+                }
+
+                // 요약본 자료 버튼 개별 제어
+                if (hasSummary) {
+                    summaryLink.style.display = 'flex';
+                    summaryLink.href = book.summaryUrl;
+                } else {
+                    summaryLink.style.display = 'none';
+                }
             } else {
+                // 둘 다 자료가 없으면 안내 문구 표시
                 materialContainer.style.display = 'none';
                 noMaterial.style.display = 'block';
             }
@@ -984,6 +1015,47 @@
         window.onclick = function (event) {
             if (event.target == modal) closeModal();
         };
+        
+        const galleryPhotos = [
+            { src: "our_moments/26.05.31.jpg", title: "2026년 5월 모임" },
+            { src: "our_moments/26.04.25.jpg", title: "2026년 4월 모임" },
+            { src: "our_moments/26.03.28.jpg", title: "2026년 3월 모임" },
+            { src: "our_moments/KakaoTalk_20251130_000330013_01.jpg", title: "2025년 11월 모임" },
+            { src: "our_moments/KakaoTalk_20250727_171311368_01.jpg", title: "2025년 7월 모임" },
+            { src: "our_moments/KakaoTalk_20250602_223447235.jpg", title: "2025년 6월 모임" },
+            { src: "our_moments/KakaoTalk_20250602_223442409.jpg", title: "2025년 6월 모임 2" },
+            { src: "our_moments/KakaoTalk_20250427_194914927_02.jpg", title: "2025년 4월 모임" },
+            { src: "our_moments/KakaoTalk_20250401_100146628_03.jpg", title: "2025년 3월 모임" }
+        ];
+
+        // 2. 갤러리 렌더링 함수
+        function renderGallery() {
+            const container = document.getElementById('gallery-container');
+            
+            // 사진이 기울어지는 각도를 무작위처럼 보이게 하는 패턴 배열
+            const rotations = ['-rotate-3', 'rotate-2', '-rotate-6', 'rotate-4', '-rotate-2', 'rotate-6'];
+
+            container.innerHTML = galleryPhotos.map((photo, index) => {
+                const rot = rotations[index % rotations.length]; // 각도 패턴 순환 적용
+                
+                return `
+                    <div class="relative w-40 md:w-56 bg-white p-3 pb-12 shadow-md hover:shadow-2xl transition-all duration-500 hover:-translate-y-4 hover:scale-110 group ${rot} cursor-zoom-in hover:z-10" onclick="openLightbox('${photo.src}')">
+                        
+                        <div class="absolute -top-3 left-1/2 -translate-x-1/2 w-10 h-4 bg-[#F4F1EA]/80 backdrop-blur-sm shadow-sm rotate-[-3deg] z-20"></div>
+                        
+                        <img src="${photo.src}" class="w-full h-40 md:h-56 object-cover" alt="${photo.title}">
+                        
+                        <p class="absolute bottom-4 left-0 w-full text-center font-serif text-[#5D4037] text-xs md:text-sm tracking-wider opacity-70 group-hover:opacity-100 transition-opacity">${photo.title}</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+
+
+
+
+
 
         // 7. Lightbox
         window.openLightbox = function (src) {
@@ -1114,6 +1186,7 @@
             renderAccordionSchedules();
             renderBooks('All');
             renderDashboard();
+            renderGallery();
         };
     </script>
 </body>
