@@ -39,6 +39,205 @@
         .hero-overlay {
             background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6));
         }
+        /* 햇살과 식물이 머무는 책방형 Hero */
+        .bookshop-hero {
+            position: relative;
+            min-height: calc(100svh - 64px);
+            overflow: hidden;
+            background: #F4F1EA;
+            color: #33271f;
+        }
+
+        .bookshop-hero__photo {
+            position: absolute;
+            inset: 0 0 0 51%;
+            overflow: hidden;
+        }
+
+        .bookshop-hero__photo::after {
+            position: absolute;
+            content: "";
+            inset: 0;
+            background:
+                linear-gradient(
+                    90deg,
+                    #F4F1EA 0%,
+                    rgba(244, 241, 234, 0.45) 15%,
+                    transparent 42%
+                ),
+                linear-gradient(
+                    180deg,
+                    rgba(45, 50, 27, 0.05),
+                    rgba(60, 40, 24, 0.18)
+                );
+        }
+
+        .bookshop-hero__photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            filter: saturate(0.92) contrast(0.96);
+        }
+
+        .bookshop-hero__light {
+            display: none;
+        }
+
+        .bookshop-hero__content {
+            position: relative;
+            z-index: 2;
+            width: min(1152px, calc(100% - 48px));
+            min-height: calc(100svh - 64px);
+            margin: 0 auto;
+            padding: 48px 0 54px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bookshop-hero__copy {
+            width: 50%;
+            margin-top: auto;
+            animation: bookshop-hero-in 0.9s ease-out both;
+        }
+
+        .bookshop-hero__copy h1 {
+            margin: 0;
+            font-family: Georgia, "Times New Roman", serif;
+            color: #372a20;
+            font-size: clamp(76px, 9vw, 136px);
+            font-weight: 400;
+            line-height: 0.82;
+            letter-spacing: -0.06em;
+            white-space: nowrap;
+        }
+
+        .bookshop-hero__korean {
+            margin-top: 25px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .bookshop-hero__korean > span {
+            width: clamp(46px, 6vw, 88px);
+            height: 1px;
+            background: #53633b;
+        }
+
+        .bookshop-hero__korean p {
+            margin: 0;
+            font-family: "KoPubWorldBatang", serif;
+            color: #3f3429;
+            font-size: clamp(24px, 2.2vw, 34px);
+            font-weight: 500;
+            line-height: 1.3;
+            letter-spacing: -0.04em;
+        }
+
+        .bookshop-hero__tagline {
+            margin: 32px 0 10px;
+            font-family: Georgia, "Times New Roman", serif;
+            color: #4a392d;
+            font-size: clamp(20px, 1.7vw, 27px);
+            line-height: 1.35;
+        }
+
+        .bookshop-hero__description {
+            margin: 0;
+            color: #6e6257;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .bookshop-hero__link {
+            display: inline-flex;
+            align-items: center;
+            gap: 18px;
+            margin-top: 23px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #81725f;
+            color: #5d513f;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-decoration: none;
+        }
+
+        .bookshop-hero__link span {
+            transition: transform 0.2s ease;
+        }
+
+        .bookshop-hero__link:hover span {
+            transform: translateY(4px);
+        }
+
+        @keyframes bookshop-hero-in {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 모바일 */
+        @media (max-width: 767px) {
+            .bookshop-hero {
+                min-height: 810px;
+            }
+
+            .bookshop-hero__photo {
+                inset: 0 0 auto;
+                height: 43vh;
+                min-height: 320px;
+            }
+
+            .bookshop-hero__photo::after {
+                background: linear-gradient(
+                    180deg,
+                    transparent 52%,
+                    #F4F1EA 100%
+                );
+            }
+
+            .bookshop-hero__content {
+                min-height: 810px;
+                padding-top: calc(43vh + 54px);
+                padding-bottom: 44px;
+            }
+
+            .bookshop-hero__copy {
+                width: 100%;
+            }
+
+            .bookshop-hero__copy h1 {
+                font-size: clamp(58px, 17vw, 80px);
+                white-space: normal;
+            }
+
+            .bookshop-hero__korean {
+                margin-top: 17px;
+            }
+
+            .bookshop-hero__korean p {
+                font-size: 23px;
+            }
+
+            .bookshop-hero__tagline {
+                margin-top: 27px;
+                font-size: 20px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .bookshop-hero__copy {
+                animation: none;
+            }
+        }
 
         .scroll-mt-24 {
             scroll-margin-top: 6rem;
@@ -163,10 +362,10 @@
             <div id="nav-links"
                 class="hidden md:flex space-x-8 text-sm font-medium text-[#5D4037] absolute md:static top-full left-0 w-full md:w-auto bg-[#F4F1EA] md:bg-transparent px-6 py-4 md:p-0 border-b md:border-none border-[#8D6E63]/10 shadow-lg md:shadow-none">
                 <a href="#intro-detail"
-                    class="block md:inline hover:text-[#8D6E63] py-2 md:py-0 transition-colors">Intro</a>
+                    class="block md:inline hover:text-[#8D6E63] py-2 md:py-0 transition-colors">About</a>
                 <a href="#quotes" class="block md:inline hover:text-[#8D6E63] py-2 md:py-0 transition-colors">Quotes</a>
                 <a href="#schedule"
-                    class="block md:inline hover:text-[#8D6E63] py-2 md:py-0 transition-colors">Schedule</a>
+                    class="block md:inline hover:text-[#8D6E63] py-2 md:py-0 transition-colors">Journey</a>
                 <a href="#books" class="block md:inline hover:text-[#8D6E63] py-2 md:py-0 transition-colors">Library</a>
                 <a href="#stats" class="block md:inline hover:text-[#8D6E63] py-2 md:py-0 transition-colors">Dashboard</a>
                 <a href="#gallery"
@@ -175,20 +374,40 @@
         </div>
     </nav>
 
+
     <!-- Hero Section -->
-    <header id="intro" class="relative h-[70vh] flex items-center justify-center text-white overflow-hidden">
-        <img src="https://images.unsplash.com/photo-1516979187457-637abb4f9353?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"
-            class="absolute inset-0 w-full h-full object-cover transform scale-105 transition-transform duration-[20s] hover:scale-110"
-            alt="Cozy reading space">
-        <div class="absolute inset-0 hero-overlay"></div>
-        
-        <div class="relative z-10 text-center px-4 reveal">
-            <h1 class="text-4xl md:text-7xl font-serif mb-6 tracking-widest uppercase drop-shadow-lg">The Margin</h1>
-            <div class="h-px w-24 bg-white/50 mx-auto my-8"></div>
-            <p class="text-lg md:text-2xl font-light opacity-90 leading-relaxed drop-shadow-md">
-                바쁜 일상 속, 잠시 멈추어 서는 시간<br>
-                책과 사람 그리고 이야기가 머무는 곳 <span class="font-serif font-bold italic text-[#D7CCC8]">'여백의 시간'</span> 입니다.
-            </p>
+    <header id="intro" class="bookshop-hero">
+        <div class="bookshop-hero__photo">
+            <img
+                src="C:\Users\82102\Downloads\다운로드 (6).jpg"
+                alt="햇살과 식물이 어우러진 책방"
+            >
+        </div>
+
+        <div class="bookshop-hero__light" aria-hidden="true"></div>
+
+        <div class="bookshop-hero__content">
+            <div class="bookshop-hero__copy">
+                <h1>The Margin</h1>
+
+                <div class="bookshop-hero__korean">
+                    <p>여백의 시간</p>
+                    <span aria-hidden="true"></span>
+                </div>
+
+                <p class="bookshop-hero__tagline">
+                    Every conversation leaves a margin.
+                </p>
+
+                <p class="bookshop-hero__description">
+                    바쁜 일상 속 잠시 멈추어 서는 시간<br>
+                    책과 사람과 이야기가 머무는 곳
+                </p>
+
+                <a href="#intro-detail" class="bookshop-hero__link">
+                    기록 둘러보기 <span aria-hidden="true">↓</span>
+                </a>
+            </div>
         </div>
     </header>
 
@@ -199,19 +418,19 @@
                 <div class="text-center reveal">
                     <span class="text-[#8D6E63] font-serif text-4xl italic opacity-50">01</span>
                     <h4 class="text-xl font-serif text-[#3E2723] mt-4 mb-4">느린 읽기</h4>
-                    <p class="text-sm text-gray-600 leading-relaxed">빨리 읽기보다 깊이 읽기를 지향합니다. 한 페이지를 읽더라도 나만의 문장을 찾는 시간을
+                    <p class="text-sm text-gray-600 leading-relaxed break-keep">빨리 읽기보다 깊이 읽기를 지향합니다. 한 페이지를 읽더라도 나만의 문장을 찾는 시간을
                         소중히 합니다.</p>
                 </div>
                 <div class="text-center reveal delay-100">
                     <span class="text-[#8D6E63] font-serif text-4xl italic opacity-50">02</span>
                     <h4 class="text-xl font-serif text-[#3E2723] mt-4 mb-4">다양한 시선</h4>
-                    <p class="text-sm text-gray-600 leading-relaxed">나와 다른 해석을 환대합니다. 정답이 없는 대화 속에서 우리의 세계는 더욱 넓어집니다.
+                    <p class="text-sm text-gray-600 leading-relaxed break-keep">나와 다른 해석을 환대합니다. 정답이 없는 대화 속에서 우리의 세계는 더욱 넓어집니다.
                     </p>
                 </div>
                 <div class="text-center reveal delay-200">
                     <span class="text-[#8D6E63] font-serif text-4xl italic opacity-50">03</span>
                     <h4 class="text-xl font-serif text-[#3E2723] mt-4 mb-4">기록의 가치</h4>
-                    <p class="text-sm text-gray-600 leading-relaxed">휘발되는 대화가 아닌, 기록으로 남는 사유를 지향합니다. 우리의 여백은 기록으로 채워집니다.
+                    <p class="text-sm text-gray-600 leading-relaxed break-keep">휘발되는 대화가 아닌, 기록으로 남는 사유를 지향합니다. 우리의 여백은 기록으로 채워집니다.
                     </p>
                 </div>
             </div>
