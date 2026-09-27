@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>여백의 시간 | 관리자 페이지</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #F4F1EA; }
+    </style>
+
+    <!-- Firebase SDK (compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>
+    <!-- Firebase Config -->
+    <script src="firebase-config.js"></script>
+</head>
+<body class="text-gray-800">
+    <nav class="bg-white shadow-sm p-4">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold text-[#3E2723]">여백의 시간 - 관리자 페이지</h1>
+            <button id="logout-btn" class="hidden text-sm text-gray-500 hover:text-gray-800" onclick="logout()">로그아웃</button>
+        </div>
+    </nav>
+
+    <!-- 로그인 섹션 -->
+    <div id="login-section" class="max-w-md mx-auto mt-20 bg-white p-8 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold mb-6 text-center">관리자 로그인</h2>
+        <div id="login-error" class="hidden text-red-500 text-sm mb-4">로그인에 실패했습니다.</div>
+        <form onsubmit="handleLogin(event)">
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">이메일</label>
+                <input type="email" id="email" class="w-full border border-gray-300 rounded px-3 py-2" required>
+            </div>
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-1">비밀번호</label>
+                <input type="password" id="password" class="w-full border border-gray-300 rounded px-3 py-2" required>
+            </div>
+            <button type="submit" class="w-full bg-[#8D6E63] text-white py-2 rounded hover:bg-[#5D4037] transition-colors">로그인</button>
+        </form>
+    </div>
+
+    <!-- 대시보드 섹션 -->
+    <div id="dashboard-section" class="hidden max-w-6xl mx-auto mt-10 p-4">
+        <div class="grid md:grid-cols-3 gap-8">
+            
+            <!-- 일정 폼 -->
+            <div class="md:col-span-1 bg-white p-6 rounded-lg shadow-sm h-fit">
+                <h3 class="text-lg font-bold mb-4 border-b pb-2" id="form-title">일정 추가</h3>
+                <form onsubmit="handleSave(event)" id="schedule-form">
+                    <input type="hidden" id="doc-id">
+                    <div class="mb-3">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">날짜 (예: 2026. 09. 26)</label>
+                        <input type="text" id="sched-date" class="w-full border border-gray-300 rounded px-3 py-2 text-sm" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">타이틀 (예: 09월 정기 모임)</label>
+                        <input type="text" id="sched-title" class="w-full border border-gray-300 rounded px-3 py-2 text-sm" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">선정 도서</label>
+                        <input type="text" id="sched-book" class="w-full border border-gray-300 rounded px-3 py-2 text-sm" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">장소</label>
+                        <input type="text" id="sched-location" class="w-full border border-gray-300 rounded px-3 py-2 text-sm" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">시간 (예: 15:00 - 18:00)</label>
+                        <input type="text" id="sched-time" class="w-full border border-gray-300 rounded px-3 py-2 text-sm" required>
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="submit" class="flex-1 bg-[#8D6E63] text-white py-2 rounded text-sm hover:bg-[#5D4037]">저장</button>
+                        <button type="button" onclick="resetForm()" class="flex-1 bg-gray-200 text-gray-800 py-2 rounded text-sm hover:bg-gray-300">초기화</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 일정 리스트 -->
+            <div class="md:col-span-2 bg-white p-6 rounded-lg shadow-sm">
+                <div class="flex justify-between items-center mb-4 border-b pb-2">
+                    <h3 class="text-lg font-bold">일정 목록</h3>
+                    <button onclick="loadInitialData()" class="text-xs bg-gray-100 px-3 py-1 rounded border hover:bg-gray-200" id="btn-seed">초기 데이터 마이그레이션</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm whitespace-nowrap">
+                        <thead class="bg-gray-50 text-gray-600">
+                            <tr>
+                                <th class="p-3 font-medium">날짜</th>
+                                <th class="p-3 font-medium">타이틀</th>
+                                <th class="p-3 font-medium">도서</th>
+                                <th class="p-3 font-medium">관리</th>
+                            </tr>
+                        </thead>
+                        <tbody id="schedules-tbody" class="divide-y divide-gray-100">
+                            <!-- 리스트 주입 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM 요소
+        const loginSection = document.getElementById('login-section');
+        const dashboardSection = document.getElementById('dashboard-section');
+        const logoutBtn = document.getElementById('logout-btn');
+        const form = document.getElementById('schedule-form');
+        const tbody = document.getElementById('schedules-tbody');
+
+        // 인증 상태 확인
+        if (window.auth) {
+            window.auth.onAuthStateChanged(user => {
+                if (user) {
+                    loginSection.classList.add('hidden');
+                    dashboardSection.classList.remove('hidden');
+                    logoutBtn.classList.remove('hidden');
+                    fetchSchedules();
+                } else {
+                    loginSection.classList.remove('hidden');
+                    dashboardSection.classList.add('hidden');
+                    logoutBtn.classList.add('hidden');
+                }
+            });
+        } else {
+            alert("Firebase가 설정되지 않았습니다. firebase-config.js를 확인해주세요.");
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            try {
+                await window.auth.signInWithEmailAndPassword(email, password);
+                document.getElementById('login-error').classList.add('hidden');
+            } catch (error) {
+                console.error(error);
+                document.getElementById('login-error').classList.remove('hidden');
+            }
+        }
+
+        async function logout() {
+            await window.auth.signOut();
+        }
+
+        async function fetchSchedules() {
+            if (!window.db) return;
+            tbody.innerHTML = '<tr><td colspan="4" class="p-3 text-center text-gray-500">로딩 중...</td></tr>';
+            try {
+                const snapshot = await window.db.collection('schedules').orderBy('date', 'desc').get();
+                tbody.innerHTML = '';
+                
+                if (snapshot.empty) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="p-3 text-center text-gray-500">데이터가 없습니다.</td></tr>';
+                    return;
+                }
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-gray-50";
+                    tr.innerHTML = `
+                        <td class="p-3">${data.date}</td>
+                        <td class="p-3">${data.title}</td>
+                        <td class="p-3 text-gray-600">${data.book}</td>
+                        <td class="p-3 space-x-2">
+                            <button onclick='editSchedule("${doc.id}", ${JSON.stringify(data)})' class="text-blue-500 hover:underline">수정</button>
+                            <button onclick='deleteSchedule("${doc.id}")' class="text-red-500 hover:underline">삭제</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error("데이터 불러오기 실패:", error);
+            }
+        }
+
+        async function handleSave(e) {
+            e.preventDefault();
+            if (!window.db) return;
+
+            const id = document.getElementById('doc-id').value;
+            const data = {
+                date: document.getElementById('sched-date').value,
+                title: document.getElementById('sched-title').value,
+                book: document.getElementById('sched-book').value,
+                location: document.getElementById('sched-location').value,
+                time: document.getElementById('sched-time').value,
+                status: "Upcoming" // 기본값
+            };
+
+            try {
+                if (id) {
+                    await window.db.collection('schedules').doc(id).update(data);
+                } else {
+                    await window.db.collection('schedules').add(data);
+                }
+                resetForm();
+                fetchSchedules();
+                alert("저장되었습니다.");
+            } catch (error) {
+                console.error("저장 실패:", error);
+                alert("저장 중 오류가 발생했습니다.");
+            }
+        }
+
+        function editSchedule(id, data) {
+            document.getElementById('form-title').innerText = "일정 수정";
+            document.getElementById('doc-id').value = id;
+            document.getElementById('sched-date').value = data.date;
+            document.getElementById('sched-title').value = data.title;
+            document.getElementById('sched-book').value = data.book;
+            document.getElementById('sched-location').value = data.location;
+            document.getElementById('sched-time').value = data.time;
+        }
+
+        async function deleteSchedule(id) {
+            if(!confirm("정말 삭제하시겠습니까?")) return;
+            try {
+                await window.db.collection('schedules').doc(id).delete();
+                fetchSchedules();
+            } catch (error) {
+                console.error(error);
+                alert("삭제 실패");
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('form-title').innerText = "일정 추가";
+            form.reset();
+            document.getElementById('doc-id').value = "";
+        }
+
+        // 마이그레이션 함수: index.html에 있던 초기 데이터를 파이어베이스로 한 번에 옮기기 위함
+        async function loadInitialData() {
+            if(!confirm("초기 데이터를 데이터베이스에 넣으시겠습니까? (기존 데이터가 중복될 수 있습니다.)")) return;
+            
+            const initialData = [
+                { date: "2026. 09. 26", status: "Upcoming", title: "09월 정기 모임", book: "사피엔스", location: "공간너섬 용산역점", time: "15:00 - 18:00" },
+                { date: "2026. 07. 25", status: "Past", title: "07월 정기 모임", book: "작별하지 않는다", location: "공간너섬 용산역점", time: "13:00 - 16:00" },
+                { date: "2026. 06. 27", status: "Past", title: "06월 정기 모임", book: "앨저넌에게 꽃을", location: "공간너섬 용산역점", time: "14:00 - 17:00" },
+                { date: "2026. 05. 31", status: "Past", title: "05월 정기 모임", book: "돈 없이 살 수 없는 것들", location: "공간너섬 용산역점", time: "15:00 - 18:00" },
+                { date: "2026. 04. 25", status: "past", title: "04월 정기 모임", book: "인어가 잠든 집", location: "워크토크 잠실점", time: "15:00 - 18:00" },
+                { date: "2026. 03. 28", status: "past", title: "03월 정기 모임", book: "천 개의 파랑", location: "공간너섬 용산역점", time: "14:00 - 17:00" },
+                { date: "2026. 02. 07", status: "Past", title: "2026년 OT", book: "새 멤버 소개 및 앞으로의 활동 계획", location: "공간너섬 용산역점", time: "17:00 - 21:00" },
+                { date: "2026. 01. 03", status: "Past", title: "01월 정기 모임", book: "죄와 벌", location: "리얼컨퍼런스 용산점", time: "14:30 - 18:00" },
+                { date: "2025. 11. 29", status: "Past", title: "11월 정기 모임", book: "물고기는 존재하지 않는다", location: "리얼컨퍼런스 용산점", time: "14:00 - 17:00" },
+                { date: "2025. 10. 25", status: "Past", title: "10월 정기 모임", book: "그대를 사랑합니다", location: "회의실D 마포점", time: "14:00 - 17:00" },
+                { date: "2025. 07. 26", status: "Past", title: "07월 정기 모임", book: "그리스인 조르바", location: "회의실D 공덕점", time: "15:00 - 18:00" },
+                { date: "2025. 06. 28", status: "Past", title: "06월 정기 모임", book: "페스트", location: "리얼컨퍼런스 용산점", time: "13:00 - 16:00" },
+                { date: "2025. 05. 31", status: "Past", title: "05월 정기 모임", book: "나쁜 사마리안인들", location: "리얼컨퍼런스 용산점", time: "12:00 - 15:00" },
+                { date: "2025. 04. 26", status: "Past", title: "04월 정기 모임", book: "셰임머신", location: "MOiM 왕십리점", time: "15:00 - 18:00" },
+                { date: "2025. 03. 29", status: "Past", title: "03월 정기 모임", book: "모순", location: "공존아지트 용산역점", time: "15:00 - 18:00" },
+                { date: "2025. 02. 22", status: "Past", title: "02월 정기 모임", book: "경제학 콘서트2", location: "콜립라운지 강남점", time: "15:00 - 18:00" },
+                { date: "2025. 01. 25", status: "Past", title: "01월 정기 모임", book: "국가론", location: "엘리멘터리 강남점", time: "13:00 - 17:00" }
+            ];
+
+            try {
+                const batch = window.db.batch();
+                initialData.forEach(item => {
+                    const docRef = window.db.collection('schedules').doc();
+                    batch.set(docRef, item);
+                });
+                await batch.commit();
+                alert("초기 데이터 마이그레이션이 완료되었습니다!");
+                fetchSchedules();
+            } catch (error) {
+                console.error("마이그레이션 실패:", error);
+                alert("실패했습니다.");
+            }
+        }
+    </script>
+</body>
+</html>
