@@ -6,7 +6,6 @@ const firebaseConfig = {
     apiKey: "AIzaSyD4BSq6cFN8CsDiXpnUIL9fB-EAU8-ng2w",
     authDomain: "themargin.firebaseapp.com",
     projectId: "themargin",
-    storageBucket: "themargin.firebasestorage.app",
     messagingSenderId: "675374191395",
     appId: "1:675374191395:web:68b93e71d6c0adb74bf296",
 };
@@ -16,16 +15,13 @@ if (typeof firebase !== 'undefined' && firebaseConfig.apiKey !== "YOUR_API_KEY")
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const auth = firebase.auth();
-    const storage = typeof firebase.storage === 'function' ? firebase.storage() : null;
     window.db = db;
     window.auth = auth;
-    window.storage = storage;
     console.log("Firebase가 성공적으로 초기화되었습니다.");
 } else {
     console.warn("Firebase config가 입력되지 않았습니다. 현재 기본(하드코딩된) 데이터를 사용합니다.");
     window.db = null;
     window.auth = null;
-    window.storage = null;
 }
 
 
