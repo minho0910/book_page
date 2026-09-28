@@ -1594,6 +1594,15 @@
 
         // Initialize
         window.onload = async function () {
+            // Firebase 로그인 저장 방식(브라우저 세션 전용)이 적용된 뒤 인증 상태를 읽습니다.
+            if (window.authPersistenceReady) {
+                try {
+                    await window.authPersistenceReady;
+                } catch (error) {
+                    console.error('로그인 세션을 초기화하지 못했습니다:', error);
+                }
+            }
+
             // 인증 상태 리스너 등록
             if(window.auth) {
                 window.auth.onAuthStateChanged(user => {
